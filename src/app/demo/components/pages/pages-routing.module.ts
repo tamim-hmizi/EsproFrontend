@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
         { path: 'skill', loadChildren: () => import('./skill/skill.module').then(m => m.SkillModule) },
         { path: 'module', loadChildren: () => import('./module/module.module').then(m => m.ModuleModule) },
         { path: 'donation', loadChildren: () => import('./donation/donation.module').then(m => m.DonationModule) },
+        { path: 'fundraiser', loadChildren: () => import('./fundraiser/fundraiser.module').then(m => m.FundraiserModule) },
         { path: '**', redirectTo: '/notfound' }
     ])],
     exports: [RouterModule]

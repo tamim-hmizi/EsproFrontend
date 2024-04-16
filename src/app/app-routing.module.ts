@@ -13,6 +13,7 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
                     { path: 'skill', loadChildren: () => import('../app/demo/components/pages/skill/skill.module').then(m => m.SkillModule) },
                     { path: 'module', loadChildren: () => import('../app/demo/components/pages/module/module.module').then(m => m.ModuleModule) },
                     { path: 'donation', loadChildren: () => import('../app/demo/components/pages/donation/donation.module').then(m => m.DonationModule) },
+                    { path: 'fundraiser', loadChildren: () => import('../app/demo/components/pages/fundraiser/fundraiser.module').then(m => m.FundraiserModule) },
                 ]
             },
             { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
