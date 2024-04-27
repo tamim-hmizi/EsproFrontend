@@ -4,7 +4,6 @@
             <p-toast></p-toast>
             <p-toolbar styleClass="mb-4">
                 <ng-template pTemplate="left"></ng-template>
-
                 <ng-template pTemplate="right">
                     <div class="my-2">
                         <button
@@ -33,7 +32,6 @@
             <p-table
                 #dt
                 [value]="events"
-                [columns]="cols"
                 responsiveLayout="scroll"
                 [rows]="10"
                 [globalFilterFields]="['name']"
@@ -73,7 +71,10 @@
                         <th>Date</th>
                         <th>Place</th>
                         <th>Sponsors</th>
-                        <th></th>
+                        <th>Banner</th>
+                        <th>Affiche</th>
+                        <th>Logo</th>
+                        <th>Actions</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-event>
@@ -81,19 +82,19 @@
                         <td>
                             <p-tableCheckbox [value]="event"></p-tableCheckbox>
                         </td>
-                        <td style="width: 14%; min-width: 10rem">
+                        <td>
                             <span class="p-column-title">Title</span>
                             {{ event.title }}
                         </td>
-                        <td style="width: 14%; min-width: 10rem">
+                        <td>
                             <span class="p-column-title">Description</span>
                             {{ event.description }}
                         </td>
-                        <td style="width: 14%; min-width: 10rem">
+                        <td>
                             <span class="p-column-title">Date</span>
                             {{ event.date | date : "yyyy-MM-dd" }}
                         </td>
-                        <td style="width: 14%; min-width: 10rem">
+                        <td>
                             <span class="p-column-title">Place</span>
                             {{ event.place }}
                         </td>
@@ -104,6 +105,27 @@
                             >
                                 {{ sponsor.name }}
                             </div>
+                        </td>
+                        <td>
+                            <img
+                                [src]="event.banner"
+                                alt="Banner"
+                                style="max-width: 100px; max-height: 100px"
+                            />
+                        </td>
+                        <td>
+                            <img
+                                [src]="event.affiche"
+                                alt="Affiche"
+                                style="max-width: 100px; max-height: 100px"
+                            />
+                        </td>
+                        <td>
+                            <img
+                                [src]="event.logo"
+                                alt="Logo"
+                                style="max-width: 100px; max-height: 100px"
+                            />
                         </td>
                         <td>
                             <div class="flex justify-content-end">
@@ -144,7 +166,16 @@
                         id="title"
                         [(ngModel)]="event.title"
                         required
+                        minlength="3"
+                        maxlength="20"
                     />
+                    <small
+                        *ngIf="
+                            event.title.length < 3 || event.title.length > 20
+                        "
+                        class="p-error"
+                        >Name must be between 3 and 20 characters.</small
+                    >
                 </div>
                 <div class="field">
                     <label for="description">Description</label>
@@ -155,7 +186,18 @@
                         required
                         rows="3"
                         cols="20"
+                        minlength="10"
+                        maxlength="100"
                     ></textarea>
+                    <small
+                        *ngIf="
+                            event.description.length < 10 ||
+                            event.description.length > 100
+                        "
+                        class="p-error"
+                        >Description must be between 10 and 100
+                        characters.</small
+                    >
                 </div>
                 <div class="field">
                     <label for="date">Date</label>
@@ -164,8 +206,14 @@
                         pInputText
                         id="date"
                         [(ngModel)]="event.date"
+                        [min]="today | date : 'yyyy-MM-dd'"
                         required
                     />
+                    <small
+                        class="p-error"
+                        *ngIf="eventDialog && event.date < today"
+                        >Date must be greater than today</small
+                    >
                 </div>
                 <div class="field">
                     <label for="place">Place</label>
@@ -175,7 +223,54 @@
                         id="place"
                         [(ngModel)]="event.place"
                         required
+                        minlength="3"
+                        maxlength="100"
                     />
+                    <small
+                        *ngIf="
+                            event.place.length < 3 || event.place.length > 100
+                        "
+                        class="p-error"
+                        >Place must be between 3 and 100 characters.</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="banner">Banner</label>
+                    <input
+                        type="file"
+                        (change)="onBannerChange($event)"
+                        accept="image/*"
+                        required
+                    /><br /><small
+                        *ngIf="selectedBanner == null"
+                        class="p-error"
+                        >Image should be added.</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="affiche">Affiche</label>
+                    <input
+                        type="file"
+                        (change)="onAfficheChange($event)"
+                        accept="image/*"
+                        required
+                    /><br /><small
+                        *ngIf="selectedAffiche == null"
+                        class="p-error"
+                        >Image should be added.</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="logo">Logo</label>
+                    <input
+                        type="file"
+                        (change)="onLogoChange($event)"
+                        accept="image/*"
+                        required
+                    /><br />
+                    <small *ngIf="selectedlogo == null" class="p-error"
+                        >Image should be added.</small
+                    >
                 </div>
                 <div
                     class="field"
@@ -220,6 +315,18 @@
                     label="Save"
                     icon="pi pi-check"
                     class="p-button-text"
+                    [disabled]="
+                        selectedAffiche == null ||
+                        selectedBanner == null ||
+                        selectedlogo == null ||
+                        event.place.length < 3 ||
+                        event.place.length > 100 ||
+                        event.date < today ||
+                        event.description.length < 10 ||
+                        event.description.length > 100 ||
+                        event.title.length < 3 ||
+                        event.title.length > 20
+                    "
                     (click)="saveevent()"
                 ></button>
             </ng-template>

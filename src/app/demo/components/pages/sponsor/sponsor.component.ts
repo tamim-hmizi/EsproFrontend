@@ -3,9 +3,10 @@ import { sponsor } from 'src/app/demo/api/sponsor';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { SponsorService } from 'src/app/demo/service/sponsor.service';
-
+import { CloudinaryService } from 'src/app/demo/service/cloudinary.service';
 @Component({
     templateUrl: './sponsor.component.html',
+    styleUrl: './sponsor.component.css',
     providers: [MessageService],
 })
 export class SponsorComponent implements OnInit {
@@ -17,15 +18,18 @@ export class SponsorComponent implements OnInit {
         id: 0,
         name: '',
         description: '',
+        image: '',
     };
     selectedsponsors: sponsor[] = [];
     submitted: boolean = false;
     cols: any[] = [];
     rowsPerPageOptions = [5, 10, 20];
-
+    selectedFile: File | null = null;
+    
     constructor(
         private SponsorService: SponsorService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private cloudinaryService: CloudinaryService
     ) {}
 
     ngOnInit() {
@@ -36,7 +40,15 @@ export class SponsorComponent implements OnInit {
         this.cols = [
             { field: 'name', header: 'Name' },
             { field: 'description', header: 'Description' },
+            { field: 'image', header: 'Image' },
         ];
+    }
+
+    onFileChange(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            this.selectedFile = input.files[0];
+        }
     }
 
     openNew() {
@@ -44,6 +56,7 @@ export class SponsorComponent implements OnInit {
             id: 0,
             name: '',
             description: '',
+            image: '',
         };
         this.sponsorDialog = true;
     }
@@ -111,6 +124,7 @@ export class SponsorComponent implements OnInit {
                     id: 0,
                     name: '',
                     description: '',
+                    image: '',
                 };
             },
             (error) => {
@@ -131,43 +145,71 @@ export class SponsorComponent implements OnInit {
     }
 
     savesponsor() {
-        this.submitted = true;
-        if (this.sponsor.id === 0) {
-            this.SponsorService.addSponsor(this.sponsor).subscribe(
-                (newsponsor) => {
-                    this.sponsors.push(newsponsor);
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Successful',
-                        detail: 'sponsor Added',
-                        life: 3000,
-                    });
-                }
-            );
-        } else {
-            this.SponsorService.updateSponsor(this.sponsor).subscribe(
-                (updatedsponsor) => {
-                    const index = this.sponsors.findIndex(
-                        (s) => s.id === updatedsponsor.id
+        this.cloudinaryService
+            .uploadFile(this.selectedFile)
+            .subscribe((response: any) => {
+                this.sponsor.image = response;
+
+                this.submitted = true;
+
+                if (this.sponsor.id === 0) {
+                    this.SponsorService.addSponsor(this.sponsor).subscribe(
+                        (newsponsor) => {
+                            this.sponsors.push(newsponsor);
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Successful',
+                                detail: 'Sponsor Added',
+                                life: 3000,
+                            });
+                        },
+                        (error) => {
+                            console.error('Error adding sponsor:', error);
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: 'Failed to add sponsor',
+                                life: 3000,
+                            });
+                        }
                     );
-                    if (index !== -1) {
-                        this.sponsors[index] = updatedsponsor;
-                    }
-                    this.messageService.add({
-                        severity: 'success',
-                        summary: 'Successful',
-                        detail: 'sponsor Updated',
-                        life: 3000,
-                    });
+                } else {
+                    this.SponsorService.updateSponsor(this.sponsor).subscribe(
+                        (updatedsponsor) => {
+                            const index = this.sponsors.findIndex(
+                                (s) => s.id === updatedsponsor.id
+                            );
+                            if (index !== -1) {
+                                this.sponsors[index] = updatedsponsor;
+                            }
+                            this.messageService.add({
+                                severity: 'success',
+                                summary: 'Successful',
+                                detail: 'Sponsor Updated',
+                                life: 3000,
+                            });
+                        },
+                        (error) => {
+                            console.error('Error updating sponsor:', error);
+                            this.messageService.add({
+                                severity: 'error',
+                                summary: 'Error',
+                                detail: 'Failed to update sponsor',
+                                life: 3000,
+                            });
+                        }
+                    );
                 }
-            );
-        }
-        this.sponsorDialog = false;
-        this.sponsor = {
-            id: 0,
-            name: '',
-            description: '',
-        };
+
+                this.sponsorDialog = false;
+                this.sponsor = {
+                    id: 0,
+                    name: '',
+                    description: '',
+                    image: '',
+                };
+                this.selectedFile = null;
+            });
     }
 
     onGlobalFilter(table: Table, event: Event) {

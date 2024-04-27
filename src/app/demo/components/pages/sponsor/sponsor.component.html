@@ -67,8 +67,10 @@
                         <th style="width: 3rem">
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                         </th>
-                        <th>Name</th>
-                        <th>Description</th>
+                        <th class="name-column">Name</th>
+                        <th class="description-column">Description</th>
+                        <th>Image</th>
+                        <th>Actions</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-sponsor>
@@ -78,13 +80,21 @@
                                 [value]="sponsor"
                             ></p-tableCheckbox>
                         </td>
-                        <td style="width: 14%; min-width: 10rem">
+                        <td class="name-column">
                             <span class="p-column-title">Name</span>
                             {{ sponsor.name }}
                         </td>
-                        <td style="width: 14%; min-width: 10rem">
+                        <td class="description-column">
                             <span class="p-column-title">Description</span>
                             {{ sponsor.description }}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Image</span>
+                            <img
+                                [src]="sponsor.image"
+                                alt="sponsor image"
+                                style="max-width: 100px; max-height: 100px"
+                            />
                         </td>
                         <td>
                             <div class="flex justify-content-end">
@@ -125,7 +135,16 @@
                         id="name"
                         [(ngModel)]="sponsor.name"
                         required
+                        minlength="3"
+                        maxlength="20"
                     />
+                    <small
+                        *ngIf="
+                            sponsor.name.length < 3 || sponsor.name.length > 20
+                        "
+                        class="p-error"
+                        >Name must be between 3 and 20 characters.</small
+                    >
                 </div>
                 <div class="field">
                     <label for="description">Description</label>
@@ -136,7 +155,30 @@
                         required
                         rows="3"
                         cols="20"
+                        minlength="10"
+                        maxlength="100"
                     ></textarea>
+                    <small
+                        *ngIf="
+                            sponsor.description.length < 10 ||
+                            sponsor.description.length > 100
+                        "
+                        class="p-error"
+                        >Description must be between 10 and 100
+                        characters.</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="image">Image</label>
+                    <input
+                        type="file"
+                        (change)="onFileChange($event)"
+                        accept="image/*"
+                        required
+                    /><br/>
+                    <small *ngIf="selectedFile == null" class="p-error"
+                        >Image should be added.</small
+                    >
                 </div>
             </ng-template>
 
@@ -155,6 +197,13 @@
                     label="Save"
                     icon="pi pi-check"
                     class="p-button-text"
+                    [disabled]="
+                        sponsor.name.length < 3 ||
+                        sponsor.name.length > 20 ||
+                        sponsor.description.length < 10 ||
+                        sponsor.description.length > 100 ||
+                        selectedFile == null
+                    "
                     (click)="savesponsor()"
                 ></button>
             </ng-template>
@@ -196,6 +245,7 @@
                 ></button>
             </ng-template>
         </p-dialog>
+
         <p-dialog
             [(visible)]="deleteSponsorsDialog"
             header="Confirm"
@@ -207,7 +257,9 @@
                     class="pi pi-exclamation-triangle mr-3"
                     style="font-size: 2rem"
                 ></i>
-                <span>Are you sure you want to delete selected sponsors?</span>
+                <span>
+                    Are you sure you want to delete selected sponsors?
+                </span>
             </div>
             <ng-template pTemplate="footer">
                 <button

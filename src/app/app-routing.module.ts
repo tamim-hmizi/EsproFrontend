@@ -1,7 +1,7 @@
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { NotfoundComponent } from './demo/components/notfound/notfound.component';
-import { AppLayoutComponent } from "./layout/app.layout.component";
+import { AppLayoutComponent } from './layout/app.layout.component';
 
 @NgModule({
     imports: [
@@ -46,6 +46,20 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
                                 import(
                                     '../app/demo/components/pages/sponsor/sponsor.module'
                                 ).then((m) => m.SponsorModule),
+                        },
+                        {
+                            path: 'eventclient',
+                            loadChildren: () =>
+                                import(
+                                    '../app/demo/components/client/event/eventclient.module'
+                                ).then((m) => m.EventClientModule),
+                        },
+                        {
+                            path: 'eventclient/:id',
+                            loadChildren: () =>
+                                import(
+                                    '../app/demo/components/client/eventDetail/eventdetail.module'
+                                ).then((m) => m.EventDetailModule),
                         },
                     ],
                 },

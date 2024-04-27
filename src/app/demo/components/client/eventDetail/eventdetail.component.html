@@ -1,0 +1,67 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <div class="flex justify-content-between align-items-center mb-4">
+                <a
+                    [routerLink]="['/eventclient']"
+                    pButton
+                    label="Back to Events"
+                    icon="pi pi-arrow-left"
+                ></a>
+            </div>
+
+            <!-- Error message if loading event details fails -->
+            <div *ngIf="hasError">
+                <p>Error loading event details. Please try again later.</p>
+            </div>
+
+            <!-- Event details section -->
+            <div *ngIf="eventDetail">
+                <div class="image-container">
+                    <div class="event-detail-banner">
+                        <img
+                            [src]="eventDetail.banner"
+                            [alt]="eventDetail.title + ' banner image'"
+                        />
+                    </div>
+                    <div class="event-detail-logo">
+                        <img
+                            [src]="eventDetail.logo"
+                            [alt]="eventDetail.title + ' logo image'"
+                        />
+                    </div>
+                </div>
+
+                <h2>{{ eventDetail.title }}</h2>
+                <p>{{ eventDetail.description }}</p>
+
+                <div class="">
+                    <p>
+                        <strong>Date:</strong>
+                        {{ eventDetail.date | date : "fullDate" }}
+                    </p>
+                    <p><strong>Location:</strong> {{ eventDetail.place }}</p>
+                </div>
+
+                <h3>Affiche</h3>
+                <div class="affiche-container">
+                    <img
+                        [src]="eventDetail.affiche"
+                        alt=""
+                        class="event-detail-affcihe"
+                    />
+                </div>
+                <h3>Sponsors</h3>
+                <ul>
+                    <li *ngFor="let sponsor of eventDetail.sponsors">
+                        <img
+                            [src]="sponsor.image"
+                            [alt]="sponsor.name + ' image'"
+                        />
+                        <p>{{ sponsor.name }}</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

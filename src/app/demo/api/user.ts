@@ -7,6 +7,4 @@ export interface user {
     telnum: number;
     role: string;
     img: string;
-    positions: Object[];
-    acadmics: Object[];
 }

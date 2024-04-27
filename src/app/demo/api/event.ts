@@ -6,5 +6,8 @@ export interface event {
     description: string;
     date: Date;
     place: string;
+    banner: string;
+    affiche: string;
+    logo: string;
     sponsors: sponsor[];
 }
