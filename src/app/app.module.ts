@@ -4,22 +4,20 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppLayoutModule } from './layout/app.layout.module';
 import { NotfoundComponent } from './demo/components/notfound/notfound.component';
-import { ProductService } from './demo/service/product.service';
-import { CountryService } from './demo/service/country.service';
-import { CustomerService } from './demo/service/customer.service';
-import { EventService } from './demo/service/event.service';
-import { IconService } from './demo/service/icon.service';
-import { NodeService } from './demo/service/node.service';
-import { PhotoService } from './demo/service/photo.service';
+import {UserService} from './demo/service/user.service'
+//import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient ,withInterceptors} from '@angular/common/http';
+import {customInterceptor} from './layout/service/costum.interceptor'
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent],
-    imports: [AppRoutingModule, AppLayoutModule],
+    imports: [AppRoutingModule, AppLayoutModule,/*HttpClientModule*/],
     providers: [
-        { provide: LocationStrategy, useClass: PathLocationStrategy },
-        CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService
+        { provide: LocationStrategy, useClass: PathLocationStrategy},
+        /*UserService ,*/ provideHttpClient(withInterceptors([customInterceptor])),
+       
     ],
     bootstrap: [AppComponent],
+    
 })
 export class AppModule {}

@@ -1,0 +1,171 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        /* Ajoutez les styles CSS ici */
+
+        /* Style pour les étiquettes des champs */
+        .field label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+/* Style pour le groupe de champs */
+
+
+/* Style pour chaque champ individuel */
+/* Style pour les champs de saisie */
+.field  {
+   
+   
+    margin-bottom: 1px; /* Ajout d'une marge entre les champs */
+    text-align: center; /* Centrer le texte dans les champs de saisie */
+}
+
+
+
+
+        /* Style pour les champs de saisie */
+        .field textarea,
+        .field input {
+            width: 100%;
+            padding: 2px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-bottom: 1px; /* Ajout d'une marge entre les champs */
+        }
+
+        /* Style pour le bouton de soumission */
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px; /* Ajout d'une marge au-dessus du bouton */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style pour le conteneur du formulaire */
+    /* Style pour le conteneur du formulaire */
+  /* Ajustement de la largeur du conteneur du formulaire */
+.surface-card {
+    background-color: rgb(191, 31, 31);
+    border-radius: 9px;
+    box-shadow: 0 0 20px rgb(191, 31, 31);
+    padding: 30px; /* Ajustez la taille de la marge intérieure si nécessaire */
+    width: 999999%; /* Augmentez la largeur pour rendre le formulaire plus grand */
+    max-width: 600px; /* Ajoutez une largeur maximale pour assurer la lisibilité */
+    margin: 0 auto; /* Centrez horizontalement */
+}
+
+
+    </style>
+</head>
+
+
+
+
+<div class="surface-ground flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+    <div class="flex flex-column align-items-center justify-content-center">
+        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="Sakai logo" class="mb-5 w-6rem flex-shrink-0">                
+        <div style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);">
+            <div class="w-full surface-card py-8 px-5 sm:px-8" style="border-radius:53px">
+                <div class="text-center mb-5">
+                    <img src="assets/demo/images/login/avatar.png" alt="Image" height="50" class="mb-3">
+                    <div class="text-900 text-3xl font-medium mb-3">Welcome, </div>
+                    <span class="text-600 font-medium">Sign in to continue</span>
+                </div>
+
+                
+                    <div class="field">
+                        <label for="nameU">Name</label>
+                        <textarea  pInputTextarea id="nameU" [(ngModel)]="registerRequest.nameU" required autofocus rows="2" cols="20"></textarea>
+                    </div>
+                
+                    <div class="field">
+                        <label for="surnameU">Surname</label>
+                        <textarea id="surnameU" pInputTextarea [(ngModel)]="registerRequest.surnameU" required rows="2" cols="20"></textarea>
+                    </div>
+               
+
+                <div class="field">
+                    <label for="email">Email</label>
+                    <textarea id="email" pInputTextarea [(ngModel)]="registerRequest.email" required rows="2" cols="40"></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <textarea id="password" pInputTextarea [(ngModel)]="registerRequest.password" required rows="2" cols="70"></textarea>
+                </div>
+                <div class="field">
+                    <label for="telnum">Tel</label>
+                    <textarea id="telnum" pInputTextarea [(ngModel)]="registerRequest.telnum" required rows="2" cols="20"></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="img">Image</label>
+                    <textarea id="img" pInputTextarea [(ngModel)]="registerRequest.img" required rows="2" cols="20"></textarea>
+                </div>
+
+
+
+                <div class="alert alert-danger" role="alert" *ngIf="errorMsg.length">
+                    <p *ngFor="let msg of errorMsg"  style="color: red; font-weight: bold;">{{msg}}</p>
+
+                </div>
+
+
+                <button pButton pRipple label="Sign Up" class="w-full p-3 text-xl" (click)="register()"></button>
+<!--
+  <div>
+                    <label for="nameU" class="block text-900 text-xl font-medium mb-2">Usrname</label>
+                    <input id="nameU" type="text" placeholder="Name User" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem" required>
+
+                    <label for="surnameU" class="block text-900 text-xl font-medium mb-2">Usrname</label>
+                    <input id="surnameU" type="text" placeholder="Surname user" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem" required>
+
+                    <label for="email" class="block text-900 text-xl font-medium mb-2">Email</label>
+                    <input id="email" type="text" placeholder="Email address" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem" required>
+
+                    <label for="password" class="block text-900 text-xl font-medium  mb-2">Password</label>
+                    <p-password id="password"  placeholder="Password" [toggleMask]="true" styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem" required></p-password>
+
+                    <label for="telnum" class="block text-900 font-medium text-xl mb-2">Phone Number</label>
+                    <input id="telnum"  placeholder="phone Number"  styleClass="mb-5" inputStyleClass="w-full p-3 md:w-30rem" required>
+                </div>
+                
+
+
+                    <div class="field">
+                        <label for="positions">Positions</label>
+                        <div *ngFor="let position of availablePositions" class="checkbox-container">
+                            <input type="checkbox" [idP]="'position_' + position.idP" [value]="position" [checked]="isSelected(position)"
+                            (change)="toggleSelection(position, $event.target.checked)">>
+                            <label [for]="'position_' + position.idP">{{ position.nameP }}</label>
+                        </div>
+                    
+
+                        <button pButton pRipple label="Sign Up" class="w-full p-3 text-xl" (click)="register()"></button>
+
+                    </div>
+            </div>-->
+
+
+
+
+
+
+
+        </div>
+   
+</div>
