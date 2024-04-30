@@ -20,15 +20,36 @@ export class FundraiserService {
     return this.http.get<Fundraiser>(`${this.baseUrl}/retrieve-fundraiser/${fundraiserId}`);
   }
 
-  addFundraiser(fundraiser: Fundraiser): Observable<Fundraiser> {
-    return this.http.post<Fundraiser>(`${this.baseUrl}/add-fundraiser`, fundraiser);
+  addFundraiser(name: string, description: string, photoFile?: File): Observable<Fundraiser> {
+    const formData: FormData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    if (photoFile) {
+      formData.append('photoFile', photoFile); // Correctly append the photo file
+    }
+    return this.http.post<Fundraiser>(`${this.baseUrl}/add-fundraiser`, formData);
   }
+  
+  
+  
 
   removeFundraiser(fundraiserId: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/remove-fundraiser/${fundraiserId}`);
   }
 
-  updateFundraiser(fundraiser: Fundraiser): Observable<Fundraiser> {
-    return this.http.put<Fundraiser>(`${this.baseUrl}/update-fundraiser`, fundraiser);
+  updateFundraiser(id: number, name: string, description: string, photoFile?: File): Observable<Fundraiser> {
+    const formData: FormData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    if (photoFile) {
+      formData.append('photoFile', photoFile);
+    }
+  
+    // Include the ID in the URL
+    return this.http.put<Fundraiser>(`${this.baseUrl}/update-fundraiser/${id}`, formData);
   }
+  
+  
+  
+
 }

@@ -27,11 +27,16 @@ export class AppMenuComponent implements OnInit {
                     { label: 'Module', icon: 'pi pi-fw pi-book', routerLink: ['/module'] },
                     { label: 'Fundraiser', icon: 'pi pi-fw pi-calendar-plus', routerLink: ['/fundraiser'] },
                     { label: 'Donation', icon: 'pi pi-fw pi-dollar', routerLink: ['/donation'] },
-                    { label: 'Classroom', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/classroom'] },
-                    { label: 'Level', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/level'] },
-                    { label: 'Option', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/option'] },
-                    { label: 'Event', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/event'] },
-                    { label: 'Sponsor', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/sponsor'] },
+                    { label: 'Donate', icon: 'pi pi-fw pi-bookmark', routerLink: ['/donate'] },
+
+
+
+                    // { label: 'Classroom', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/classroom'] },
+                    // { label: 'Level', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/level'] },
+                    // { label: 'Option', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/option'] },
+                    // { label: 'Event', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/event'] },
+                    // { label: 'Sponsor', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/sponsor'] },
+                    
                     
                     // { label: 'Button', icon: 'pi pi-fw pi-box', routerLink: ['/uikit/button'] },
                     // { label: 'Table', icon: 'pi pi-fw pi-table', routerLink: ['/uikit/table'] },

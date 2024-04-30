@@ -1,0 +1,45 @@
+/* styles.css */
+
+.col-md-6 {
+    flex-basis: 70%;
+    max-width: 30%;
+  }
+  
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  
+/* CSS for Donation Form */
+
+/* Margin for Selected Fundraiser header */
+.selected-fundraiser-header {
+  margin-top: 25px;
+}
+
+/* Margin for Donation Options Form */
+.donation-options-form {
+  margin-left: 210px;
+}
+
+/* Spacing between radio buttons */
+.payment-methods {
+  margin-bottom: 20px;
+}
+
+
+
+
+/* CSS for Donation Form */
+
+/* Styling for Amount input */
+.amount-input {
+  margin-bottom: 20px;
+}
+
+/* Center Submit button and add margin-top */
+.submit-button {
+  text-align: center;
+}
+
