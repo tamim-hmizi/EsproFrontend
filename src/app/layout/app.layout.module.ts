@@ -17,6 +17,8 @@ import { AppFooterComponent } from './app.footer.component';
 import { AppConfigModule } from './config/config.module';
 import { AppSidebarComponent } from "./app.sidebar.component";
 import { AppLayoutComponent } from "./app.layout.component";
+import { UserRoutingModule } from '../demo/components/pages/user/user-routing.module'; // Importez le module de routage unique ici
+
 
 @NgModule({
     declarations: [
@@ -39,7 +41,8 @@ import { AppLayoutComponent } from "./app.layout.component";
         InputSwitchModule,
         RippleModule,
         RouterModule,
-        AppConfigModule
+        AppConfigModule,
+        UserRoutingModule
     ],
     exports: [AppLayoutComponent]
 })

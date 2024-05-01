@@ -1,0 +1,362 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left"></ng-template>
+
+                <ng-template pTemplate="right">
+                    <div class="my-2">
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="openNew()"></button>
+                        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+                            (click)="deleteSelectedPublications()"
+                            [disabled]="!selectedPublications || !selectedPublications.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="publications" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['descriptionP']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedPublications" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Manage Publications</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+                                class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="descriptionP">Id <p-sortIcon field="descriptionP"></p-sortIcon></th>
+                        <th pSortableColumn="subjectP">Subject <p-sortIcon field="subjectP"></p-sortIcon></th>
+                        
+                        <th pSortableColumn="descriptionP">Description <p-sortIcon field="descriptionP"></p-sortIcon></th>
+                        <th pSortableColumn="dateP">Date <p-sortIcon field="dateP"></p-sortIcon></th>
+                        <th >RDI </th>
+                        <th >Chercheurs </th>
+                        <th >Lien </th>
+                        <th > </th>
+
+
+
+                        <!-- Add additional columns if necessary -->
+                        
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-publication>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="publication"></p-tableCheckbox>
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Id</span>
+                            {{publication.id}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Subject</span>
+                            {{publication.subjectP}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            
+                            <span class="p-column-title">Description</span>
+                            <div class="col-12">
+                                <button (click)="showDescription(publication)" pButton icon="pi pi-external-link" label="Show"></button>
+                            </div>
+                            
+                        </td>
+                        
+                        <td style="width:14%; min-width:10rem;">
+                            {{ publication.dateP | date: 'yyyy/MM/dd' }}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">RDIs</span>
+                           
+                           
+                                
+                                   
+                                        <!-- Pour chaque chercheur dans la publication, afficher ses RDIs sous forme de badge -->
+                                        <ul *ngFor="let chercheur of publication.chercheurs" class="rdi-badge" [ngStyle]="{
+                                            'background-color':getColorFromHash(chercheur.rdi.theme),
+                                            'color': '#ffffff',
+                                            'padding': '5px',
+                                            'border-radius': '5px',
+                                            'margin-right': '5px'
+                                          }">
+                                            
+                                            {{chercheur.rdi.theme}}
+                                           
+                                        </ul>
+                          
+                        </td>
+                    <!-- Composant des chercheurs avec affichage dynamique -->
+<td style="width: 14%; min-width: 10rem;">
+    <span class="p-column-title">Chercheurs</span>
+    <div class="field">
+      <p-avatarGroup styleClass="mb-3">
+        <!-- Afficher les quatre premiers chercheurs -->
+        <ng-container *ngFor="let chercheur of publication.chercheurs; let i = index;">
+          <p-avatar 
+            *ngIf="i < 4 && chercheur.user.img" 
+            [image]="chercheur.user.img" 
+            size="large" 
+            shape="circle">
+          </p-avatar>
+          <p-avatar 
+            *ngIf="i < 4 && !chercheur.user.img" 
+            label="{{ (chercheur.user.nameU[0] || '') + (chercheur.user.surnameU[0] || '') }}" 
+            size="large" 
+            shape="circle" 
+            [style]="{'background-color': getAvatarColor(chercheur.user.nameU + chercheur.user.surnameU), 'color': '#000000'}">
+          </p-avatar>
+        </ng-container>
+  
+        <!-- Afficher +N si plus de 4 chercheurs -->
+        <p-avatar 
+          *ngIf="publication.chercheurs.length > 4 && !showAll" 
+          label="+{{ publication.chercheurs.length - 4 }}" 
+          size="large" 
+          shape="circle" 
+          [style]="{'background-color': '#9c27b0', 'color': '#ffffff'}"
+          (click)="toggleShowAll()">
+        </p-avatar>
+  
+        <!-- Afficher les chercheurs cachés lorsque 'showAll' est vrai -->
+        <ng-container *ngIf="showAll">
+          <ng-container *ngFor="let chercheur of publication.chercheurs.slice(4)">
+            <p-avatar 
+              *ngIf="chercheur.user.img" 
+              [image]="chercheur.user.img" 
+              size="large" 
+              shape="circle">
+            </p-avatar>
+            <p-avatar 
+              *ngIf="!chercheur.user.img" 
+              label="{{ (chercheur.user.nameU[0] || '') + (chercheur.user.surnameU[0] || '') }}" 
+              size="large" 
+              shape="circle" 
+              [style]="{'background-color': getAvatarColor(chercheur.user.nameU + chercheur.user.surnameU), 'color': '#000000'}">
+            </p-avatar>
+          </ng-container>
+        </ng-container>
+      </p-avatarGroup>
+    </div>
+  </td>
+  
+                             
+                              
+                          
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">lien</span>
+                           <!-- Bouton avec icône de lien -->
+                       <!-- Afficher le bouton et le lien uniquement si 'publication.link' n'est pas vide -->
+                       <a *ngIf="publication.link" [href]="publication.link" target="_blank">
+                        <button 
+                          pButton 
+                          pRipple 
+                          type="button" 
+                          icon="pi pi-link"  
+                          class="p-button-rounded"
+                        >
+                        </button>
+                      </a>
+                      
+                      <!-- Si pas de lien, ne pas afficher le <a> -->
+                      <button 
+                        *ngIf="!publication.link"  
+                        pButton 
+                        pRipple 
+                        type="button" 
+                        icon="pi pi-link"  
+                        class="p-button-rounded p-button-disabled" 
+                      >
+                      </button>
+ 
+                          
+
+                        </td>
+                        <!-- Add additional columns if necessary -->
+                        <td>
+                            <div class="flex justify-content-end">
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editPublication(publication)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                    (click)="deletePublication(publication)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <p-dialog header="Description de {{newPublication.subjectP}}" [(visible)]="display" [modal]="true" showEffect="fade" [style]="{width: '30vw'}" [breakpoints]="{'960px': '75vw'}">
+            <p class="line-height-3 m-0">
+               {{newPublication.descriptionP}}
+            </p>
+            <ng-template pTemplate="footer">
+                    <button pButton icon="pi pi-check" (click)="display=false" label="Ok" class="p-button-outlined"></button>
+            </ng-template>
+        </p-dialog>
+        <p-dialog [(visible)]="publicationDialog" [style]="{width: '450px'}" header="Publication Details" [modal]="true"
+            class="p-fluid" [formGroup]="addPublicationForm" (ngSubmit)="savePublication()">
+
+            <ng-template pTemplate="content">
+               <!-- publication.component.html -->
+
+                <div class="field">
+                  <label for="chercheurs">Chercheurs</label>
+                  <p-multiSelect
+                    id="chercheurs"
+                    [options]="chercheurOptions"
+                    formControlName="Chercheurs" 
+                    optionLabel="user.nameU"
+                    defaultLabel="Sélectionnez des Chercheurs"
+                    (onChange)="toggleSelection($event, $event.checked)"  [ngClass]="{
+                        'field-invalid': Chercheurs!.touched && Chercheurs!.invalid
+                      }"
+                  >
+                  </p-multiSelect>
+              
+                  <!-- Afficher des messages d'erreur selon la validation -->
+                  <div *ngIf="addPublicationForm.controls.Chercheurs.touched && addPublicationForm.controls.Chercheurs.errors?.['required'] && addPublicationForm.controls.Chercheurs.errors?.['minOneRequired']" class="alert alert-danger">
+                    Au moins un chercheur doit être sélectionné.
+                  </div>
+                </div>
+              
+            
+
+                
+                
+            <div class="field">
+                <label for="subject">Subject</label>
+                <input type="text" pInputText id="subjectP" formControlName="subject"  required  [ngClass]="{
+                    'field-invalid': subject!.touched && subject!.invalid
+                  }"/>
+                 <div *ngIf="addPublicationForm.controls.subject.touched && addPublicationForm.controls.subject.errors?.['required']" class="alert alert-danger">
+                  Le sujet est obligatoire.
+                </div>
+                <div *ngIf="addPublicationForm.controls.subject.touched && addPublicationForm.controls.subject.errors?.['minlength']" class="alert alert-danger">
+                  Le sujet doit contenir au moins 3 caractères.
+                </div>
+            </div>
+               
+            <div class="field">
+                <label for="description">Description</label>
+                <textarea
+                  id="descriptionP"
+                  pInputTextarea
+                  formControlName="description"
+                  rows="3"
+                  cols="20"
+                  [ngClass]="{
+                    'field-invalid': description!.touched && description!.invalid
+                  }"
+                ></textarea>
+              
+                <!-- Messages d'erreur -->
+                <div *ngIf="addPublicationForm.controls.description.touched && addPublicationForm.controls.description.errors?.['required']" class="alert alert-danger">
+                  La description est obligatoire.
+                </div>
+                <div *ngIf="addPublicationForm.controls.description.touched && addPublicationForm.controls.description.errors?.['minlength']" class="alert alert-danger">
+                  La description doit contenir au moins 3 caractères.
+                </div>
+              </div>
+              
+             
+                <div class="field">
+                    <label for="categorie">Categorie</label>
+    <p-autoComplete
+      formControlName="categorie" 
+      [suggestions]="filteredCountries"
+      (completeMethod)="filterCountry($event)"
+      [dropdown]="true" 
+      [ngClass]="{
+        'field-invalid': categorie!.touched && addPublicationForm.controls.categorie.errors?.['required']
+      }"
+    >
+    </p-autoComplete>
+
+    <!-- Afficher un message d'erreur lorsque le champ est vide -->
+    <div *ngIf="addPublicationForm.controls.categorie.touched && addPublicationForm.controls.categorie.errors?.['required']" class="alert alert-danger ">
+      Vous devez sélectionner une catégorie.
+    </div>
+  </div>
+              <!-- Utilisez la bonne casse pour la liaison des données -->
+                <div class="field">
+                  <label for="link">Lien</label>
+                  <input formControlName="link" pInputText id="link" required [ngClass]="{
+                    'field-invalid': link!.touched && link!.invalid
+                  }"/>
+                  
+                  <div *ngIf="addPublicationForm.controls.link.touched && addPublicationForm.controls.link.hasError('pattern')" class="alert alert-danger">
+                    Le lien doit être au format correct (http/https).
+                  </div>
+                  <div *ngIf="addPublicationForm.controls.link.hasError('unique')" class="alert alert-danger">
+                    Ce lien existe déjà.
+                  </div>
+                </div>
+              
+            <div class="field">
+                <label for="date">Date</label>
+                <p-calendar 
+  [showIcon]="true" 
+  inputId="dateP" 
+  type="date" 
+  formControlName="date" 
+  [maxDate]="maxDate"
+  [ngClass]="{
+    'field-invalid': date!.touched && date!.invalid
+  }">
+>
+</p-calendar>
+<div *ngIf="addPublicationForm.controls.date.touched && addPublicationForm.controls.date.errors?.['required']" class="alert alert-danger">
+    La date est obligatoire.
+  </div>
+            </div>
+                <!-- Remove skills section if not applicable -->
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"  type="submit" [disabled]="!addPublicationForm.valid"
+                    (click)="savePublication()"></button>
+            </ng-template>
+
+        </p-dialog>
+        
+        <p-dialog [(visible)]="deletePublicationDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="newPublication">Are you sure you want to delete <b>{{newPublication.subjectP}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deletePublicationDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+                    (click)="confirmDeletePublication()"></button>
+            </ng-template>
+        </p-dialog>
+        
+        <p-dialog [(visible)]="deletePublicationsDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span>Are you sure you want to delete selected Publications?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deletePublicationsDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+                    (click)="confirmDeleteSelectedPublications()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

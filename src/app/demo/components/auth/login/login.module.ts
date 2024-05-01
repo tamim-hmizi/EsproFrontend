@@ -7,7 +7,15 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule } from '@angular/forms';
 import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
 
+import { TableModule } from 'primeng/table';
+import { FileUploadModule } from 'primeng/fileupload';
+
+import { RippleModule } from 'primeng/ripple';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { RatingModule } from 'primeng/rating';
 @NgModule({
     imports: [
         CommonModule,
@@ -16,7 +24,39 @@ import { InputTextModule } from 'primeng/inputtext';
         CheckboxModule,
         InputTextModule,
         FormsModule,
-        PasswordModule
+        PasswordModule,
+        DialogModule,
+
+
+
+        CommonModule,
+    
+        TableModule,
+        FileUploadModule,
+        FormsModule,
+        ButtonModule,
+        RippleModule,
+        ToastModule,
+        ToolbarModule,
+        RatingModule,
+        InputTextModule,
+      
+       
+        DialogModule,
+        //HttpClientModule,
+       
+       
+        TableModule,
+        FileUploadModule,
+        
+        RippleModule,
+        ToastModule,
+        ToolbarModule,
+        RatingModule,
+       
+
+
+
     ],
     declarations: [LoginComponent]
 })

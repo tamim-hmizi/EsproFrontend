@@ -62,9 +62,7 @@
 
         <div class="col-12 xl:col-6">
             <div class="card">
-                <h5>Recent Sales</h5>
-                <p-table [value]="products" [paginator]="true" [rows]="5" responsiveLayout="scroll">
-                    <ng-template pTemplate="header">
+                <h5>Recent Sales</h5>                    <ng-template pTemplate="header">
                         <tr>
                             <th>Image</th>
                             <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
@@ -84,15 +82,11 @@
                             </td>
                         </tr>
                     </ng-template>
-                </p-table>
             </div>
             <div class="card">
                 <div class="flex justify-content-between align-items-center mb-5">
                     <h5>Best Selling Products</h5>
-                    <div>
-                        <button pButton type="button" icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-plain" (click)="menu.toggle($event)"></button>
-                        <p-menu #menu [popup]="true" [model]="items"></p-menu>
-                    </div>
+                    <div>                    </div>
                 </div>
                 <ul class="list-none p-0 m-0">
                     <li class="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
@@ -174,17 +168,12 @@
         <div class="col-12 xl:col-6">
             <div class="card">
                 <h5>Sales Overview</h5>
-                <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
             </div>
 
             <div class="card">
                 <div class="flex align-items-center justify-content-between mb-4">
                     <h5>Notifications</h5>
-                    <div>
-                        <button pButton type="button" icon="pi pi-ellipsis-v" class="p-button-rounded p-button-text p-button-plain" (click)="menu.toggle($event)"></button>
-                        <p-menu #menu [popup]="true" [model]="items"></p-menu>
-                    </div>
-                </div>
+                    <div>                </div>
 
                 <span class="block text-600 font-medium mb-3">TODAY</span>
                 <ul class="p-0 mx-0 mt-0 mb-4 list-none">
