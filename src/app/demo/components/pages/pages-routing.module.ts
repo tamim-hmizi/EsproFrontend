@@ -11,25 +11,6 @@ import { RouterModule } from '@angular/router';
         { path: 'affectation', loadChildren: () => import('./affectation/affectation.module').then(m => m.AffectationModule) },
         { path: 'calendar', loadChildren: () => import('./calendar/calendar.module').then(m => m.CalendarModule) },
         { path: 'vacation', loadChildren: () => import('./vacation/vacation.module').then(m => m.VacationModule) },
-        {
-            path: 'classroom',
-            loadChildren: () =>
-                import('./classroom/classroom.module').then(
-                    (m) => m.ClassroomModule,
-                ),
-        },
-        {
-            path: 'level',
-            loadChildren: () =>
-                import('./level/level.module').then((m) => m.LevelModule),
-        },
-        {
-            path: 'option',
-            loadChildren: () =>
-                import('./option/option.module').then(
-                    (m) => m.OptionModule,
-                ),
-        },
         { path: '**', redirectTo: '/notfound' }
     ])],
     exports: [RouterModule]
