@@ -31,7 +31,7 @@
                         <div *ngIf="donationForm.get('amount')?.errors?.pattern" class="text-danger">Please enter a valid number.</div>
                     </div>
                 </div>
-
+                
                 <div class="form-group">
                     <label>Payment Method:</label>
                     <div class="form-check">
@@ -53,8 +53,9 @@
                         </label>
                     </div>
                 </div>
+                
 
-                <button type="submit" class="btn btn-primary">Donate</button>
+                <p-button type="submit" class="btn btn-primary">Donate</p-button>
             </form>
         </div>
 
