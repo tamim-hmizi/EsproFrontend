@@ -45,13 +45,18 @@ export class DonateComponent implements OnInit {
     this.http.get<Fundraiser[]>('http://localhost:8089/esprobackend/fundraiser/retrieve-all-fundraisers')
       .subscribe(
         (data: Fundraiser[]) => {
-          this.fundraisers = data;
+          this.fundraisers = data.map(fundraiser => {
+            // Decode base64 image and assign to displayPicture property
+            const imageUrl = 'data:image/png;base64,' + fundraiser.displayPicture;
+            return { ...fundraiser, displayPicture: imageUrl };
+          });
         },
         (error) => {
           console.error('Error fetching fundraisers:', error);
         }
       );
   }
+
 
   selectFundraiser(fundraiser: Fundraiser): void {
     this.selectedFundraiser = fundraiser;
