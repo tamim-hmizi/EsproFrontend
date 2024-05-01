@@ -18,8 +18,29 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
                     {path: 'affectation',loadChildren: () =>import('../app/demo/components/pages/affectation/affectation.module').then((m) => m.AffectationModule)},
                     {path: 'vacation',loadChildren: () =>import('./demo/components/pages/vacation/vacation.module').then((m) => m.VacationModule)},
                     {path: 'calendar',loadChildren: () =>import('../app/demo/components/pages/calendar/calendar.module').then((m) => m.CalendarModule)},
-                
-            
+                    {
+                        path: 'level',
+                        loadChildren: () =>
+                            import(
+                                '../app/demo/components/pages/level/level.module'
+                                ).then((m) => m.LevelModule),
+                    },
+                    {
+                        path: 'option',
+                        loadChildren: () =>
+                            import(
+                                '../app/demo/components/pages/option/option.module'
+                                ).then((m) => m.OptionModule),
+                    },
+                    {
+                        path: 'classroom',
+                        loadChildren: () =>
+                            import(
+                                '../app/demo/components/pages/classroom/classroom.module'
+                                ).then((m) => m.ClassroomModule),
+                    },
+
+
         ]
             },
     { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
