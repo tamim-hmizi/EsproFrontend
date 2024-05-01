@@ -5,6 +5,9 @@ import { Fundraiser } from './../../../api/fundraiser';
 import { loadStripe, RedirectToCheckoutOptions, Stripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import { ethers } from 'ethers';
+import { Donation } from 'src/app/demo/api/donation';
+import { DonationService } from '../../../service/donation.service';
+
 declare var window: any;
 
 @Component({
@@ -21,7 +24,7 @@ export class DonateComponent implements OnInit {
   fundraisers: Fundraiser[] = [];
   selectedFundraiser: Fundraiser | null = null;
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient) {
+  constructor(private formBuilder: FormBuilder, private http: HttpClient,private donationService: DonationService) {
     this.donationForm = this.formBuilder.group({
       amount: ['', [Validators.required, Validators.min(5), Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
       paymentMethod: ['card', Validators.required]
@@ -86,11 +89,11 @@ export class DonateComponent implements OnInit {
 
   async redirectToStripeCheckout() {
     const amount = this.donationForm.value.amount;
-
+  
     this.http.post<any>('http://localhost:8089/esprobackend/donation/api/create-checkout-session', { amount }).subscribe(response => {
       const sessionId = response.sessionId;
       const donationId = response.donationId;
-
+  
       this.stripePromise.then(stripe => {
         if (stripe) {
           stripe.redirectToCheckout({
@@ -99,7 +102,15 @@ export class DonateComponent implements OnInit {
             if (result.error) {
               console.error(result.error);
             } else {
-              // Handle successful payment
+              const donation: Donation = { id: donationId, type: 'Crédit Card', amount: amount, status: 'complete', user: null }; 
+              this.donationService.addDonation(donation).subscribe(
+                addedDonation => {
+                  console.log('Donation added:', addedDonation);
+                },
+                error => {
+                  console.error('Error adding donation:', error);
+                }
+              );
             }
           });
         } else {
@@ -110,6 +121,7 @@ export class DonateComponent implements OnInit {
       console.error('Error creating checkout session:', error);
     });
   }
+  
 
   initiatePaypalCheckout(amount: number) {
     console.log('Initiating PayPal checkout for amount:', amount);

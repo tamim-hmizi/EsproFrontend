@@ -1,0 +1,271 @@
+<div class="grid">
+    <div class="col-12">
+      <div class="card px-6 py-6">
+        <p-toast></p-toast>
+        <p-toolbar styleClass="mb-4">
+          <ng-template pTemplate="left"></ng-template>
+          <ng-template pTemplate="right">
+            <div class="my-2">
+              <button
+                pButton
+                pRipple
+                label="New"
+                icon="pi pi-plus"
+                class="p-button-success mr-2"
+                (click)="openNew()"
+              ></button>
+              <button
+                pButton
+                pRipple
+                label="Delete"
+                icon="pi pi-trash"
+                class="p-button-danger"
+                (click)="deleteSelectedvacations()"
+                [disabled]="!selectedvacations || !selectedvacations.length"
+              ></button>
+            </div>
+          </ng-template>
+        </p-toolbar>
+  
+        <p-table
+          #dt
+          [value]="vacations"
+          [columns]="cols"
+          responsiveLayout="scroll"
+          [rows]="10"
+          [globalFilterFields]="['type', 'start_date', 'end_date']"
+          [paginator]="true"
+          [rowsPerPageOptions]="rowsPerPageOptions"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          [(selection)]="selectedvacations"
+          selectionMode="multiple"
+          [rowHover]="true"
+          dataKey="id"
+        >
+          <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+              <h5 class="m-0">Manage Vacations</h5>
+              <span class="block mt-2 md:mt-0 p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                  pInputText
+                  type="text"
+                  (input)="onGlobalFilter(dt, $event)"
+                  placeholder="Search..."
+                  class="w-full sm:w-auto"
+                />
+              </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 3rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th>Duration</th>
+              <th>Type</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-vacation>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="vacation"></p-tableCheckbox>
+              </td>
+              <td style="width: 14%; min-width: 10rem">
+                <span class="p-column-title">Duration</span>
+                {{ vacation.duration }}
+              </td>
+              <td style="width: 14%; min-width: 10rem">
+                <span class="p-column-title">Type</span>
+                {{ vacation.type }}
+              </td>
+              <td style="width: 14%; min-width: 10rem">
+                <span class="p-column-title">Start Date</span>
+                {{ vacation.start_date | date: 'mediumDate' }}
+              </td>
+              <td style="width: 14%; min-width: 10rem">
+                <span class="p-column-title">End Date</span>
+                {{ vacation.end_date | date: 'mediumDate' }}
+              </td>
+              <td>
+                <div class="flex justify-content-end">
+                  <button
+                    pButton
+                    pRipple
+                    icon="pi pi-pencil"
+                    class="p-button-rounded p-button-success mr-2"
+                    (click)="editvacation(vacation)"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    icon="pi pi-trash"
+                    class="p-button-rounded p-button-warning"
+                    (click)="deletevacation(vacation)"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  
+  <p-dialog
+    [(visible)]="vacationDialog"
+    [style]="{ width: '450px' }"
+    header="Vacation Details"
+    [modal]="true"
+    class="p-fluid"
+  >
+    <ng-template pTemplate="content">
+      <div class="field">
+        <label for="duration" style="width: 120px; margin-right: 1rem;">Duration</label>
+        <input
+          type="text"
+          pInputText
+          id="duration"
+          [(ngModel)]="vacation.duration"
+          required
+          readonly
+          style="flex-grow: 1; padding: 0.5rem; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc;"
+        />
+        <p-message *ngIf="submitted && vacation.duration === 0" severity="error">Duration is required.</p-message>
+      </div>
+      
+      <div class="field">
+        <label for="type" style="width: 120px; margin-right: 1rem;">Type</label>
+        <div class="custom-dropdown">
+          <select id="type" [(ngModel)]="vacation.type" required style="flex-grow: 1; padding: 0.5rem; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc; width: 15rem;">
+            <option value="" disabled selected hidden>Select Type</option>
+            <option value="paternite">Paternité</option>
+            <option value="maternite">Maternité</option>
+            <option value="maladie">Maladie</option>
+          </select>
+        </div>
+        <p-message *ngIf="submitted && !vacation.type" severity="error">Type is required.</p-message>
+      </div>
+      
+      <div class="field">
+        <label for="start_date" style="width: 120px; margin-right: 1rem;">Start Date</label>
+        <input
+          type="date"
+          pInputText
+          id="start_date"
+          [(ngModel)]="vacation.start_date"
+          (ngModelChange)="calculateDuration()"
+          required
+          (input)="updateEndDateMinDate()"
+          style="flex-grow: 1; padding: 0.5rem; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc;"
+        />
+        <p-message *ngIf="submitted && !vacation.start_date" severity="error">Start Date is required.</p-message>
+      </div>
+      
+      <div class="field">
+        <label for="end_date" style="width: 120px; margin-right: 1rem;">End Date</label>
+        <input
+          type="date"
+          pInputText
+          id="end_date"
+          [(ngModel)]="vacation.end_date"
+          (ngModelChange)="calculateDuration()"
+          [min]="minEndDate"
+          required
+          style="flex-grow: 1; padding: 0.5rem; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc;"
+        />
+        <p-message *ngIf="submitted && !vacation.end_date" severity="error">End Date is required.</p-message>
+      </div>
+</ng-template>
+  
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="hideDialog()"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Save"
+        icon="pi pi-check"
+        class="p-button-text"
+        (click)="savevacation()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+  
+  <p-dialog
+    [(visible)]="deleteVacationDialog"
+    header="Confirm"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+  >
+    <div class="flex align-items-center justify-content-center">
+      <i
+        class="pi pi-exclamation-triangle mr-3"
+        style="font-size: 2rem"
+      ></i>
+      <span *ngIf="vacation">
+        Are you sure you want to delete <b>{{ vacation.type }}</b>?
+      </span>
+    </div>
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        icon="pi pi-times"
+        class="p-button-text"
+        label="No"
+        (click)="deleteVacationDialog = false"
+      ></button>
+      <button
+        pButton
+        pRipple
+        icon="pi pi-check"
+        class="p-button-text"
+        label="Yes"
+        (click)="confirmDelete()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+  
+  <p-dialog
+    [(visible)]="deleteVacationsDialog"
+    header="Confirm"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+  >
+    <div class="flex align-items-center justify-content-center">
+      <i
+        class="pi pi-exclamation-triangle mr-3"
+        style="font-size: 2rem"
+      ></i>
+      <span>Are you sure you want to delete selected vacations?</span>
+    </div>
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        icon="pi pi-times"
+        class="p-button-text"
+        label="No"
+        (click)="deleteVacationsDialog = false"
+      ></button>
+      <button
+        pButton
+        pRipple
+        icon="pi pi-check"
+        class="p-button-text"
+        label="Yes"
+        (click)="confirmDeleteSelected()"
+      ></button>
+    </ng-template>
+  </p-dialog>

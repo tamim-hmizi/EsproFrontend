@@ -15,14 +15,19 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
                     { path: 'donation', loadChildren: () => import('../app/demo/components/pages/donation/donation.module').then(m => m.DonationModule) },
                     { path: 'fundraiser', loadChildren: () => import('../app/demo/components/pages/fundraiser/fundraiser.module').then(m => m.FundraiserModule) },
                     { path: 'donate', loadChildren: () => import('../app/demo/components/pages/donate/donate.module').then(m => m.DonateModule) },
-                ]
+                    {path: 'affectation',loadChildren: () =>import('../app/demo/components/pages/affectation/affectation.module').then((m) => m.AffectationModule)},
+                    {path: 'vacation',loadChildren: () =>import('./demo/components/pages/vacation/vacation.module').then((m) => m.VacationModule)},
+                    {path: 'calendar',loadChildren: () =>import('../app/demo/components/pages/calendar/calendar.module').then((m) => m.CalendarModule)},
+                
+            
+        ]
             },
-            { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
-            { path: 'notfound', component: NotfoundComponent },
-            { path: '**', redirectTo: '/notfound' },
+    { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
+    { path: 'notfound', component: NotfoundComponent },
+    { path: '**', redirectTo: '/notfound' },
         ], { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
     ],
-    exports: [RouterModule]
+exports: [RouterModule]
 })
 export class AppRoutingModule {
 }

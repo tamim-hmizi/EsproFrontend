@@ -1,0 +1,49 @@
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Increased margin between each checkbox container */
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px; /* Increased space between checkbox and label */
+    cursor: pointer;
+}
+
+.checkbox-container label {
+    cursor: pointer;
+    font-size: 16px; /* Increased font size for better readability */
+}
+
+.download-button {
+    background-color: #808080; 
+    color: white; 
+    margin-right: 10px; 
+    border: none; 
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden; 
+  }
+  
+.download-button:hover {
+    background-color: #696969; 
+  }
+
+.upload-button {
+    background-color: #808080; 
+    color: white; 
+    margin-right: 10px; 
+    border: none; 
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden; 
+    height: 42px;
+  }
+  
+.upload-button:hover {
+    background-color: #696969; 
+  }
+
+.upload-button, .download-button {
+    font-size: 16px;
+  }
+  
