@@ -5,6 +5,9 @@ import { Fundraiser } from './../../../api/fundraiser';
 import { loadStripe, RedirectToCheckoutOptions, Stripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import { ethers } from 'ethers';
+import { Donation } from 'src/app/demo/api/donation';
+import { DonationService } from '../../../service/donation.service';
+
 declare var window: any;
 
 @Component({
@@ -21,7 +24,7 @@ export class DonateComponent implements OnInit {
   fundraisers: Fundraiser[] = [];
   selectedFundraiser: Fundraiser | null = null;
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient) {
+  constructor(private formBuilder: FormBuilder, private http: HttpClient,private donationService: DonationService) {
     this.donationForm = this.formBuilder.group({
       amount: ['', [Validators.required, Validators.min(5), Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
       paymentMethod: ['card', Validators.required]
@@ -45,13 +48,18 @@ export class DonateComponent implements OnInit {
     this.http.get<Fundraiser[]>('http://localhost:8089/esprobackend/fundraiser/retrieve-all-fundraisers')
       .subscribe(
         (data: Fundraiser[]) => {
-          this.fundraisers = data;
+          this.fundraisers = data.map(fundraiser => {
+            // Decode base64 image and assign to displayPicture property
+            const imageUrl = 'data:image/png;base64,' + fundraiser.displayPicture;
+            return { ...fundraiser, displayPicture: imageUrl };
+          });
         },
         (error) => {
           console.error('Error fetching fundraisers:', error);
         }
       );
   }
+
 
   selectFundraiser(fundraiser: Fundraiser): void {
     this.selectedFundraiser = fundraiser;
@@ -105,6 +113,7 @@ export class DonateComponent implements OnInit {
       console.error('Error creating checkout session:', error);
     });
   }
+  
 
   initiatePaypalCheckout(amount: number) {
     console.log('Initiating PayPal checkout for amount:', amount);

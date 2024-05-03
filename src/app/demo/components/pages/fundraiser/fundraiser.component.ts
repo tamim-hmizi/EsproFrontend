@@ -15,12 +15,13 @@ export class FundraiserComponent implements OnInit {
   deleteFundraiserDialog: boolean = false;
   deleteFundraisersDialog: boolean = false;
   fundraisers: Fundraiser[] = [];
-  fundraiser: Fundraiser = { id: 0, name: '', description: '', displayPicture: '' };
+  fundraiser: Fundraiser = { id: 0, name: '', description: '', displayPicture: '',moneytocollect: 0 };
   selectedFundraisers: Fundraiser[] = [];
   submitted: boolean = false;
   cols: any[] = [
     { field: 'name', header: 'Name' },
     { field: 'description', header: 'Description' },
+    { field: 'moneytocollect', header: 'Objectif' },
     { field: 'displayPicture', header: 'Photo' }
   ];
   rowsPerPageOptions = [5, 10, 20];
@@ -47,7 +48,8 @@ export class FundraiserComponent implements OnInit {
 
     this.fundraiserForm = this.fb.group({
       name: ['', Validators.required], // Add validators if needed
-      description: ['', Validators.required], // Add validators if needed
+      description: ['', Validators.required],
+      moneytocollect: ['', Validators.required], // Add validators if needed
       photo: [null, Validators.required] // Initialize the photo FormControl
     });
   }
@@ -70,7 +72,7 @@ export class FundraiserComponent implements OnInit {
 
 
   openNew() {
-    this.fundraiser = { id: 0, name: '', description: '', displayPicture: '' };
+    this.fundraiser = { id: 0, name: '', description: '', displayPicture: '',moneytocollect: 0 };
     this.submitted = false;
     this.fundraiserDialog = true;
   }
@@ -110,7 +112,7 @@ export class FundraiserComponent implements OnInit {
     this.fundraiserService.removeFundraiser(this.fundraiser.id).subscribe(() => {
       this.fundraisers = this.fundraisers.filter(val => val.id !== this.fundraiser.id);
       this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Fundraiser Deleted', life: 3000 });
-      this.fundraiser = { id: 0, name: '', description: '', displayPicture: '' };
+      this.fundraiser = { id: 0, name: '', description: '', displayPicture: '',moneytocollect: 0 };
     });
   }
 
@@ -135,7 +137,7 @@ export class FundraiserComponent implements OnInit {
     // Call the service method to add or update the fundraiser
     if (this.fundraiser.id === 0) {
       // Adding a new fundraiser
-      this.fundraiserService.addFundraiser(this.fundraiser.name, this.fundraiser.description, this.selectedFile).subscribe(newFundraiser => {
+      this.fundraiserService.addFundraiser(this.fundraiser.name, this.fundraiser.description, this.fundraiser.moneytocollect, this.selectedFile).subscribe(newFundraiser => {
         // Convert the blob to base64
         this.blobToBase64(this.selectedFile).then(base64String => {
           // Update the displayPicture property of the newly added fundraiser
@@ -157,7 +159,7 @@ export class FundraiserComponent implements OnInit {
       });
     } else {
       // Updating an existing fundraiser
-      this.fundraiserService.updateFundraiser(this.fundraiser.id, this.fundraiser.name, this.fundraiser.description, this.selectedFile).subscribe(updatedFundraiser => {
+      this.fundraiserService.updateFundraiser(this.fundraiser.id, this.fundraiser.name, this.fundraiser.description, this.fundraiser.moneytocollect, this.selectedFile).subscribe(updatedFundraiser => {
         // Convert the blob to base64
         this.blobToBase64(this.selectedFile).then(base64String => {
           // Update the displayPicture property of the updated fundraiser
