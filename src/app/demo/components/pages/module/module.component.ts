@@ -153,37 +153,29 @@ export class ModuleComponent implements OnInit {
         this.submitted = true;
     
         this.module.skills = [...this.selectedSkills]; // Update module object with selected skills
-    
-        if (this.module.id === 0) {
-            // If the module id is 0, it means it's a new module, so call addModule
-            console.log('New Module Object:', this.module); // Log the module object before API call
-            this.moduleService.addModule(this.module).subscribe(addedModule => {
-                this.modules.push(addedModule); // Add the newly added module to the list
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Module Added', life: 3000 });
-            });
-        } else {
-            // If the module id is not 0, it means it's an existing module, so call updateModule
-            console.log('Updated Module Object:', this.module); // Log the module object before API call
-            this.moduleService.updateModule(this.module).subscribe(updatedModule => {
-                const index = this.modules.findIndex(m => m.id === updatedModule.id);
-                if (index !== -1) {
-                    this.modules[index] = updatedModule;
-                }
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Module Updated', life: 3000 });
-            });
-        }
-    
-        this.moduleDialog = false;
-        this.module = {
-            id: 0,
-            name: '',
-            description: '',
-            teaching_hours: 0,
-            ects: 0,
-            skills: []
-        };
+
+    if (this.module.id === 0) {
+        // Add module logic...
+    } else {
+        console.log('Updated Module Object:', this.module); // Log the module object before API call
+        this.moduleService.updateModule(this.module).subscribe(updatedModule => {
+            const index = this.modules.findIndex(m => m.id === updatedModule.id);
+            if (index !== -1) {
+                this.modules[index] = updatedModule;
+            }
+            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Module Updated', life: 3000 });
+        });
     }
-    
+    this.moduleDialog = false;
+    this.module = {
+        id: 0,
+        name: '',
+        description: '',
+        teaching_hours: 0,
+        ects: 0,
+        skills: []
+    };
+}
     
     
 

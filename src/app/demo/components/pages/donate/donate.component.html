@@ -1,20 +1,17 @@
-<div class="container">
-    <!-- Fundraiser cards -->
-    <div class="row justify-content-center">
-        <div class="col-md-6 mb-4" *ngFor="let fundraiser of fundraisers">
-            <p-card header="{{fundraiser.name}}" subheader="Description :" [style]="{ width: '360px' }">
-                <ng-template pTemplate="header">
-                    <img alt="Card" [src]="fundraiser.displayPicture" alt="Fundraiser Photo" />
-                </ng-template>
-                <p>{{ fundraiser.description }}</p>
-                <ng-template pTemplate="footer">
-                    <p-button type="button" class="btn btn-primary" (click)="selectFundraiser(fundraiser)">Donate</p-button>
-                </ng-template>
-            </p-card>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4" *ngFor="let fundraiser of fundraisers">
+                <div class="card mb-4 shadow-sm" (click)="selectFundraiser(fundraiser)">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">{{ fundraiser.name }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ fundraiser.description }}</p>
+                        <button type="button" class="btn btn-lg btn-block btn-primary" (click)="selectFundraiser(fundraiser)">Donate</button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-
-
 
         <div *ngIf="selectedFundraiser" class="text-center">
             <h3>Selected Fundraiser: {{ selectedFundraiser.name }}</h3> <!-- Display selected fundraiser name -->
@@ -31,7 +28,7 @@
                         <div *ngIf="donationForm.get('amount')?.errors?.pattern" class="text-danger">Please enter a valid number.</div>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label>Payment Method:</label>
                     <div class="form-check">
@@ -53,7 +50,8 @@
                         </label>
                     </div>
                 </div>
-                <p-button type="submit" class="btn btn-primary">Donate</p-button>
+
+                <button type="submit" class="btn btn-primary">Donate</button>
             </form>
         </div>
-
+    </div>
