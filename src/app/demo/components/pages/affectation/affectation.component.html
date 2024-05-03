@@ -1,0 +1,271 @@
+<div class="grid">
+    <div class="col-12">
+      <div class="card px-6 py-6"> <!-- Card structure -->
+        <p-toast></p-toast> <!-- Toast for notifications -->
+        
+        <!-- Toolbar with "New" and "Delete" buttons -->
+        <p-toolbar styleClass="mb-4">
+          <ng-template pTemplate="left"></ng-template> <!-- Left section -->
+          <ng-template pTemplate="right"> <!-- Right section -->
+            <div class="my-2"> <!-- Container for spacing -->
+
+              <!-- Custom upload button -->
+              <button
+                pButton
+                pRipple
+                class="upload-button"  
+                icon="pi pi-upload"  
+                (click)="triggerFileUpload()" 
+              ></button>
+
+              <!-- Hidden file input to handle the actual file upload -->
+              <input
+                type="file"
+                #fileInput
+                (change)="onFileChange($event)"
+                accept=".csv" 
+                style="display: none;"
+              />
+
+               <!-- Download button with spacing and grey color -->
+              <button
+                pButton
+                pRipple
+                class="p-button-rounded download-button"
+                icon="pi pi-download" 
+                (click)="exportToCSV()" 
+              ></button>
+
+              <!-- "New" button -->
+              <button
+                pButton
+                pRipple
+                label="New"
+                icon="pi pi-plus"
+                class="p-button-success mr-2" 
+                (click)="openNew()"
+              ></button>
+              
+              <!-- "Delete" button -->
+              <button
+                pButton
+                pRipple
+                label="Delete"
+                icon="pi pi-trash"
+                class="p-button-danger" 
+                [disabled]="!selectedAffectations || !selectedAffectations.length" 
+                (click)="deleteSelectedAffectations()"
+              ></button>
+            </div>
+          </ng-template> <!-- End of toolbar template -->
+        </p-toolbar>
+        
+        <!-- Table for affectations with pagination and selection -->
+        <p-table
+          #dt
+          [value]="affectations"
+          [columns]="cols"
+          responsiveLayout="scroll"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          [(selection)]="selectedAffectations"
+          selectionMode="multiple"
+          [rowHover]="true"
+          dataKey="id"
+        >
+          <!-- Table caption with search functionality -->
+          <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+              <h5 class="m-0">Manage Affectations</h5>
+              <span class="block mt-2 md:mt-0 p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                  pInputText
+                  type="text"
+                  placeholder="Search..."
+                  (input)="onGlobalFilter(dt, $event)"
+                />
+              </span>
+            </div>
+          </ng-template>
+          
+          <!-- Table headers -->
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 3rem"> <!-- Header for selection checkbox -->
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th>Semester</th> <!-- Header for semester -->
+              <th>Calendar</th> <!-- Header for calendar -->
+              <th style="text-align: right;"></th> <!-- Space for action buttons -->
+            </tr>
+          </ng-template>
+          
+          <!-- Table body with affectation details -->
+          <ng-template pTemplate="body" let-affectation>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="affectation"></p-tableCheckbox> <!-- Selection checkbox -->
+              </td>
+              <td>{{ affectation.semester }}</td> <!-- Display semester -->
+              <td>{{ affectation.calendar?.academic_year }}</td> <!-- Display calendar -->
+              <td style="text-align: right;"> <!-- Right-aligned action buttons -->
+                <div class="flex justify-content-end"> <!-- Flexbox for alignment -->
+                  <button
+                    pButton
+                    pRipple
+                    icon="pi pi-pencil"
+                    class="p-button-rounded p-button-success mr-2" 
+                    (click)="editAffectation(affectation)"
+                  ></button>
+                  
+                  <button
+                    pButton
+                    pRipple
+                    icon="pi pi-trash"
+                    class="p-button-rounded p-button-warning" 
+                    (click)="deleteAffectation(affectation)"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table> <!-- End of table -->
+      </div> <!-- End of card -->
+    </div> <!-- End of grid -->
+  </div>
+  
+  <!-- Dialog for creating/editing affectations -->
+  <p-dialog
+    [(visible)]="affectationDialog" 
+    [style]="{width: '450px'}" 
+    header="Affectation Details" 
+    [modal]="true" 
+    class="p-fluid"
+  >
+    <ng-template pTemplate="content">
+      
+      <div class="field" style="margin-bottom: 1rem;"> 
+        <label for="semester" style="display: block; margin-bottom: 0.5rem;">Semester</label> 
+        <input
+          type="number"
+          id="semester"
+          [(ngModel)]="affectation.semester"
+          required
+          style="width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid lightblue; border-radius: 4px;" 
+          class="no-spinner"
+        />
+      </div>
+      
+      <!-- Style to ensure consistent border on focus -->
+      <style>
+        input:focus {
+          border: 1px solid lightblue; /* Keep the same border */
+          outline: none; /* Remove default focus outline */
+        }
+      </style>
+  
+      <!-- Dropdown for calendar selection -->
+      <div class="field">
+        <label for="calendar">Calendar</label>
+        <p-dropdown 
+          [options]="availableCalendars" 
+          optionLabel="academic_year" 
+          [(ngModel)]="affectation.calendar"
+          (onChange)="onCalendarChange($event)"
+          appendTo="body"
+          style="width: 100%; padding: 0.5rem; border-radius: 4px;"
+        ></p-dropdown>
+      </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="hideDialog()"
+      ></button>
+      
+      <button
+        pButton
+        pRipple
+        label="Save"
+        icon="pi pi-check"
+        class="p-button-text"
+        (click)="saveAffectation()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+  
+  <!-- Dialog for single affectation deletion confirmation -->
+  <p-dialog
+    [(visible)]="deleteAffectationDialog"
+    header="Confirm"
+    [modal]="true" 
+    [style]="{width:'450px'}"
+  >
+    <div class="flex align-items-center justify-content-center">
+      <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+      <span>Are you sure you want to delete this affectation?</span>
+    </div>
+    
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        label="No"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="deleteAffectationDialog = false"
+      ></button>
+      
+      <button
+        pButton
+        pRipple
+        label="Yes"
+        icon="pi pi-check"
+        class="p-button-text"
+        (click)="confirmDelete()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+  
+  <!-- Dialog for multiple affectations deletion confirmation -->
+  <p-dialog
+    [(visible)]="deleteAffectationsDialog" 
+    header="Confirm" 
+    [modal]="true" 
+    [style]="{width:'450px'}"
+  >
+    <div class="flex align-items-center justify-content-center">
+      <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+      <span>Are you sure you want to delete selected affectations?</span>
+    </div>
+    
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        label="No"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="deleteAffectationsDialog = false"
+      ></button>
+      
+      <button
+        pButton
+        pRipple
+        label="Yes"
+        icon="pi pi-check"
+        class="p-button-text"
+        (click)="confirmDeleteSelected()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+  

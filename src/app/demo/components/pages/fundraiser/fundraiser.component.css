@@ -1,0 +1,21 @@
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Increased margin between each checkbox container */
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px; /* Increased space between checkbox and label */
+    cursor: pointer;
+}
+
+.checkbox-container label {
+    cursor: pointer;
+    font-size: 10px; /* Increased font size for better readability */
+}
+
+
+
+
+
+
