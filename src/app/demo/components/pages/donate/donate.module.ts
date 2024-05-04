@@ -19,6 +19,8 @@ import { DialogModule } from 'primeng/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { CardModule } from 'primeng/card';
+import { ProgressBarModule } from 'primeng/progressbar';
+
 
 
 
@@ -43,7 +45,8 @@ import { CardModule } from 'primeng/card';
         ReactiveFormsModule,
         InputNumberModule,
         DialogModule,
-        CardModule 
+        CardModule,
+        ProgressBarModule
     ],
     providers: [MessageService],
     declarations: [DonateComponent]

@@ -7,6 +7,10 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { Donation } from 'src/app/demo/api/donation';
 import { DonationService } from '../../../service/donation.service';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { FundraiserService } from 'src/app/demo/service/fundraiser.service';
+
+
 
 declare var window: any;
 
@@ -23,8 +27,10 @@ export class DonateComponent implements OnInit {
   connectedAddress: string = '';
   fundraisers: Fundraiser[] = [];
   selectedFundraiser: Fundraiser | null = null;
+  totalDonations: { [fundraiserId: number]: number } = {}; // Object to store total donations for each fundraiser
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient,private donationService: DonationService) {
+
+  constructor(private formBuilder: FormBuilder, private http: HttpClient,private donationService: DonationService,private fundraiserService: FundraiserService) {
     this.donationForm = this.formBuilder.group({
       amount: ['', [Validators.required, Validators.min(5), Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
       paymentMethod: ['card', Validators.required]
@@ -53,12 +59,35 @@ export class DonateComponent implements OnInit {
             const imageUrl = 'data:image/png;base64,' + fundraiser.displayPicture;
             return { ...fundraiser, displayPicture: imageUrl };
           });
+          // Fetch total donations for each fundraiser
+          this.fundraisers.forEach(fundraiser => {
+            this.getDonationTotal(fundraiser.id);
+          });
         },
         (error) => {
           console.error('Error fetching fundraisers:', error);
         }
       );
   }
+
+  getDonationTotal(fundraiserId: number): void {
+    this.fundraiserService.getTotalDonations(fundraiserId)
+      .subscribe((total: number) => {
+        this.totalDonations[fundraiserId] = total;
+        console.log(total);
+      }, (error) => {
+        console.error('Error fetching total donation:', error);
+      });
+  }
+
+  calculateDonationPercentage(fundraiser: Fundraiser): number {
+    const totalDonation = this.totalDonations[fundraiser.id] || 0;
+    if (!fundraiser.moneytocollect || totalDonation === 0) {
+        return 0;
+    }
+    const percentage = (totalDonation / fundraiser.moneytocollect) * 100;
+    return parseFloat(percentage.toFixed(2));
+}
 
 
   selectFundraiser(fundraiser: Fundraiser): void {
@@ -184,4 +213,6 @@ async function initiateCryptodonate(amountInUSD: number, recipientAddress: strin
         console.error('Error donating crypto:', error);
         // Handle error and update UI
     }
+
+    
 }

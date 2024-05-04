@@ -53,6 +53,7 @@ export class FundraiserService {
   }
   
   
-  
-
+  getTotalDonations(fundraiserId: number): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/${fundraiserId}/totalDonation`);
+  }
 }
