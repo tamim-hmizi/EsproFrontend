@@ -7,7 +7,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   templateUrl: './fundraiser.component.html',
-  providers: [MessageService]
+  providers: [MessageService],
+  styleUrls: ['./fundraiser.component.css']
 })
 export class FundraiserComponent implements OnInit {
 

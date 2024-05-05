@@ -103,8 +103,8 @@
                 </div>
                 <div class="field">
                     <label for="description">Objectif</label>
-                    <textarea id="description" pInputTextarea [(ngModel)]="fundraiser.moneytocollect" required rows="3"
-                        cols="20"></textarea>
+                    <input type="number" id="description" pInputTextarea [(ngModel)]="fundraiser.moneytocollect" required rows="3"
+                        cols="20"> 
                     <small class="ng-dirty ng-invalid" *ngIf="submitted && !fundraiser.moneytocollect">Objectif is
                         required.</small>
                 </div>
@@ -113,7 +113,9 @@
                     <div class="photo-container">
                         <input type="file" id="photo" (change)="onFileChange($event)" class="p-inputtext">
                         <img class="card-img-top rounded-circle p-m-1"
-                            style="width: 40%; height: 40%; object-fit: cover;" [src]="fundraiser.displayPicture"
+                        *ngIf="fundraiser.displayPicture  "
+                            style="width: 40%; height: 40%; object-fit: cover;" 
+                            [src]="fundraiser.displayPicture"
                             alt="Fundraiser Photo" />
                     </div>
                 </div>
