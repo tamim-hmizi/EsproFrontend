@@ -19,6 +19,7 @@ declare var window: any;
   templateUrl: './donate.component.html',
   styleUrls: ['./donate.component.css'],
 })
+
 export class DonateComponent implements OnInit {
   donationForm: FormGroup;
   stripePromise: Promise<Stripe | null>;
@@ -27,7 +28,7 @@ export class DonateComponent implements OnInit {
   connectedAddress: string = '';
   fundraisers: Fundraiser[] = [];
   selectedFundraiser: Fundraiser | null = null;
-  totalDonations: { [fundraiserId: number]: number } = {}; // Object to store total donations for each fundraiser
+  totalDonations: { [fundraiserId: number]: number } = {}; 
 
 
   constructor(private formBuilder: FormBuilder, private http: HttpClient,private donationService: DonationService,private fundraiserService: FundraiserService) {
@@ -94,27 +95,51 @@ export class DonateComponent implements OnInit {
     this.selectedFundraiser = fundraiser;
   }
 
-  async submitDonation() {
+  async submitDonation(fundraiserId: number) {
     if (this.donationForm.invalid || !this.selectedFundraiser) {
-      return;
+        return;
     }
-
+    console.log(fundraiserId);
     const amount = this.donationForm.value.amount;
     const paymentMethod = this.donationForm.value.paymentMethod;
 
-    console.log('Donation amount:', amount);
-    console.log('Selected payment method:', paymentMethod);
+    try {
+        if (paymentMethod === 'Credit/Debit Card') {
+            await this.redirectToStripeCheckout();
+        } else if (paymentMethod === 'Paypal') {
+            this.initiatePaypalCheckout(amount);
+        } else if (paymentMethod === 'Crypto') {
+            initiateCryptodonate(amount, "0xF75bD3adC93F29D5f4235F1a60B19628575B1b16");
+        } else {
+            console.error('Invalid payment method:', paymentMethod);
+            return;
+        }
 
-    if (paymentMethod === 'card') {
-      await this.redirectToStripeCheckout();
-    } else if (paymentMethod === 'paypal') {
-      this.initiatePaypalCheckout(amount);
-    } else if (paymentMethod === 'crypto') {
-      initiateCryptodonate(amount, "0xF75bD3adC93F29D5f4235F1a60B19628575B1b16");
-    } else {
-      console.error('Invalid payment method:', paymentMethod);
+        const donation: Donation = {
+            type: paymentMethod,
+            amount: amount,
+            status: 'Complete',
+            fundraiserId: fundraiserId // Make sure fundraiserId is passed correctly
+        };
+
+        this.donationService.addDonation(donation)
+            .subscribe(
+                (response) => {
+                    console.log('Donation added successfully:', response);
+                },
+                (error) => {
+                    console.error('Error adding donation:', error);
+                }
+            );
+    } catch (error) {
+        console.error('Error processing payment:', error);
     }
-  }
+}
+
+
+  
+
+
 
   async redirectToStripeCheckout() {
     const amount = this.donationForm.value.amount;

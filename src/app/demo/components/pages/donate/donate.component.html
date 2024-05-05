@@ -4,36 +4,43 @@
         <ng-container *ngFor="let fundraiser of fundraisers">
             <div class="col-sm-6 mb-4">
                 <div class="card fundraiser-card">
-                    <img class="card-img-top mx-auto d-block" [src]="fundraiser.displayPicture" alt="Fundraiser Photo">
+                    <img class="card-img-top mx-auto d-block" [src]="fundraiser.displayPicture" alt="Fundraiser Photo" style="margin-left: 655px !important;">
                     <div class="card-body text-center">
                         <h5 class="card-title">{{ fundraiser.name }}</h5>
-                        <p class="card-text">{{ fundraiser.description }}</p>
+                        <p class="card-text" style="text-align: left;">{{ fundraiser.description }}</p>
                         <h4>Objective: {{ fundraiser.moneytocollect }} $</h4>
                         <div class="progress-wrapper">
                             <h6>Money Collected: {{ totalDonations[fundraiser.id] }} $</h6>
 
                             <div class="progress-bar-container">
-                                <p-progressBar [value]="calculateDonationPercentage(fundraiser) || 0" [style]="{ height: '20px' }"></p-progressBar>
+                                <p-progressBar [value]="calculateDonationPercentage(fundraiser) || 0"
+                                    [style]="{ height: '20px' }"></p-progressBar>
                             </div>
                         </div>
-                        
+
                         <div class="text-center" style="margin-top:10px;" (click)="selectFundraiser(fundraiser)">
-                            <button pButton pRipple label="Donate" type="Donate" class="p-button-success"></button>
+                            <button pButton pRipple label="Donate" type="button" class="p-button-success"></button>
                         </div>
                     </div>
                     <!-- Payment form -->
                     <div *ngIf="selectedFundraiser === fundraiser" class="mt-3 text-center">
-                        <form id="donation-form" [formGroup]="donationForm" (submit)="submitDonation()" class="donation-form">
+                        <form id="donation-form" [formGroup]="donationForm" (submit)="submitDonation()"
+                            class="donation-form">
                             <div class="form-group">
                                 <label for="amount">Amount:</label>
                                 <div class="input-group">
-                                    <input type="text" id="amount" formControlName="amount" class="form-control amount-input" required>
-                                    <span class="input-group-text">  $</span>
+                                    <input type="text" id="amount" formControlName="amount"
+                                        class="form-control amount-input" required>
+                                    <span class="input-group-text"> $</span>
                                 </div>
-                                <div *ngIf="donationForm.get('amount')?.invalid && (donationForm.get('amount')?.dirty || donationForm.get('amount')?.touched)">
-                                    <div *ngIf="donationForm.get('amount')?.errors?.required" class="text-danger">Amount is required.</div>
-                                    <div *ngIf="donationForm.get('amount')?.errors?.min" class="text-danger">Minimum amount is $5.</div>
-                                    <div *ngIf="donationForm.get('amount')?.errors?.pattern" class="text-danger">Please enter a valid number.</div>
+                                <div
+                                    *ngIf="donationForm.get('amount')?.invalid && (donationForm.get('amount')?.dirty || donationForm.get('amount')?.touched)">
+                                    <div *ngIf="donationForm.get('amount')?.errors?.required" class="text-danger">Amount
+                                        is required.</div>
+                                    <div *ngIf="donationForm.get('amount')?.errors?.min" class="text-danger">Minimum
+                                        amount is $5.</div>
+                                    <div *ngIf="donationForm.get('amount')?.errors?.pattern" class="text-danger">Please
+                                        enter a valid number.</div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -41,7 +48,8 @@
                                 <div class="row justify-content-center">
                                     <div class="col-auto">
                                         <div class="form-check">
-                                            <input type="radio" formControlName="paymentMethod" value="card" id="card{{fundraiser.id}}">
+                                            <input type="radio" formControlName="paymentMethod" value="Credit/Debit Card"
+                                                id="card{{fundraiser.id}}">
                                             <label for="card{{fundraiser.id}}" class="form-check-label">
                                                 <i class="pi pi-credit-card icon"></i> Credit/Debit Card
                                             </label>
@@ -49,7 +57,8 @@
                                     </div>
                                     <div class="col-auto">
                                         <div class="form-check">
-                                            <input type="radio" formControlName="paymentMethod" value="paypal" id="paypal{{fundraiser.id}}">
+                                            <input type="radio" formControlName="paymentMethod" value="Paypal"
+                                                id="paypal{{fundraiser.id}}">
                                             <label for="paypal{{fundraiser.id}}" class="form-check-label">
                                                 <i class="pi pi-paypal icon"></i> PayPal
                                             </label>
@@ -57,7 +66,8 @@
                                     </div>
                                     <div class="col-auto">
                                         <div class="form-check">
-                                            <input type="radio" formControlName="paymentMethod" value="crypto" id="crypto{{fundraiser.id}}">
+                                            <input type="radio" formControlName="paymentMethod" value="Crypto"
+                                                id="crypto{{fundraiser.id}}">
                                             <label for="crypto{{fundraiser.id}}" class="form-check-label">
                                                 <i class="pi pi-bitcoin icon"></i> Crypto
                                             </label>
@@ -65,7 +75,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <button pButton pRipple label="Donate" type="submit" class="p-button-success"></button>
+                            <button pButton pRipple label="Donate" type="button" class="p-button-success" (click)="submitDonation(fundraiser.id)"></button>
+
                         </form>
                     </div>
                 </div>
