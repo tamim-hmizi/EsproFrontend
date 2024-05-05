@@ -4,10 +4,10 @@
         <ng-container *ngFor="let fundraiser of fundraisers">
             <div class="col-sm-6 mb-4">
                 <div class="card fundraiser-card">
-                    <img class="card-img-top mx-auto d-block" [src]="fundraiser.displayPicture" alt="Fundraiser Photo" style="margin-left: 655px !important;">
+                    <img class="card-img-top mx-auto d-block center-image" [src]="fundraiser.displayPicture" alt="Fundraiser Photo">
                     <div class="card-body text-center">
-                        <h5 class="card-title">{{ fundraiser.name }}</h5>
-                        <p class="card-text" style="text-align: left;">{{ fundraiser.description }}</p>
+                        <h5 class="card-title" style="margin-top: 18px;">{{ fundraiser.name }}</h5>
+                        <p class="card-text" style="text-align: left;">Description : {{ fundraiser.description }}</p>
                         <h4>Objective: {{ fundraiser.moneytocollect }} $</h4>
                         <div class="progress-wrapper">
                             <h6>Money Collected: {{ totalDonations[fundraiser.id] }} $</h6>

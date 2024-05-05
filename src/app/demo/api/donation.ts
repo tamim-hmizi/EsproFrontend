@@ -8,4 +8,5 @@ export interface Donation {
     status: string;
     user?: User;
     fundraiserId: number;
+    fundraiserName?: string;
 }
