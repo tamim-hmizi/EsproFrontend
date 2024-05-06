@@ -1,0 +1,159 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left"></ng-template>
+
+                <ng-template pTemplate="right">
+                    <div class="my-2">
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+                            (click)="openNew()"></button>
+                        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+                            (click)="deleteSelectedFundraisers()"
+                            [disabled]="!selectedFundraisers || !selectedFundraisers.length"></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="fundraisers" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['name','description']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedFundraisers" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Manage Fundraisers</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input type="file" (change)="onFileChange($event)" accept="image/*" formControlName="photo">
+
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                        <th pSortableColumn="description">Objectif <p-sortIcon field="description"></p-sortIcon></th>
+                        <th pSortableColumn="description">Image <p-sortIcon field="photo"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-fundraiser>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="fundraiser"></p-tableCheckbox>
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Name</span>
+                            {{fundraiser.name}}
+                        </td>
+                        <td style="max-width: 300px;">
+                            <span class="p-column-title">Description</span>
+                            {{fundraiser.description}}
+                        </td>
+                        <td style="max-width: 300px;">
+                            <span class="p-column-title">Objectif</span>
+                            {{fundraiser.moneytocollect}} $
+                        </td>
+                        <td>
+                            <div *ngIf="fundraiser.displayPicture">
+                                <img class="card-img-top rounded-circle"
+                                    style="width: 10%; height: 10%; object-fit: cover;"
+                                    [src]="fundraiser.displayPicture" alt="Fundraiser Photo" />
+                            </div>
+                            <div *ngIf="!fundraiser.displayPicture">
+                                <p>No photo available</p>
+                            </div>
+                        </td>
+
+
+                        <td>
+                            <div class="flex justify-content-end"> <!-- Align buttons to the right -->
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editFundraiser(fundraiser)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                    (click)="deleteFundraiser(fundraiser)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <p-dialog [(visible)]="fundraiserDialog" [style]="{width: '450px'}" header="Fundraiser Details" [modal]="true"
+            class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="fundraiser.name" required autofocus
+                        [ngClass]="{'ng-invalid ng-dirty' : submitted && !fundraiser.name}" />
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !fundraiser.name">Name is required.</small>
+                </div>
+                <div class="field">
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="fundraiser.description" required rows="3"
+                        cols="20"></textarea>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !fundraiser.description">Description is
+                        required.</small>
+                </div>
+                <div class="field">
+                    <label for="description">Objectif $</label>
+                    <input type="number" id="description" pInputTextarea [(ngModel)]="fundraiser.moneytocollect" required rows="3"
+                        cols="20"> 
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !fundraiser.moneytocollect">Objectif is
+                        required.</small>
+                </div>
+                <div class="p-field">
+                    <label for="photo" class="p-d-block">Photo</label>
+                    <div class="photo-container">
+                        <input type="file" id="photo" (change)="onFileChange($event)" class="p-inputtext">
+                        <img class="card-img-top rounded-circle p-m-1"
+                        *ngIf="fundraiser.displayPicture  "
+                            style="width: 40%; height: 40%; object-fit: cover;" 
+                            [src]="fundraiser.displayPicture"
+                            alt="Fundraiser Photo" />
+                    </div>
+                </div>
+
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                    (click)="saveFundraiser()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteFundraiserDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="fundraiser">Are you sure you want to delete <b>{{fundraiser.name}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deleteFundraiserDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+                    (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteFundraisersDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span>Are you sure you want to delete selected fundraisers?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deleteFundraisersDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+                    (click)="confirmDeleteSelected()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

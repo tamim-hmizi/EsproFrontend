@@ -1,0 +1,161 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left"></ng-template>
+
+                <ng-template pTemplate="right">
+                    <div class="my-2">
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedModules()" [disabled]="!selectedModules || !selectedModules.length"></button>
+                        <span class="ml-2 mr-2"></span> <!-- Spacer -->
+                        <input type="file" accept=".pdf" (change)="onFileSelected($event)" style="display: none;" id="fileInput">
+                        <button pButton pRipple label="Upload PDF" icon="pi pi-upload" class="p-button-info" (click)="showFileDialog()"></button>
+                    </div>
+                    
+                    
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="modules" [columns]="cols" responsiveLayout="scroll" [rows]="10"
+                [globalFilterFields]="['description']" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedModules" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Manage Modules</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."
+                                class="w-full sm:w-auto" />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                        <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                        <th pSortableColumn="teaching_hours">Teaching Hours <p-sortIcon
+                                field="teaching_hours"></p-sortIcon></th>
+                        <th pSortableColumn="ects">ECTS <p-sortIcon field="ects"></p-sortIcon></th>
+                        <th>Skills</th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-module>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="module"></p-tableCheckbox>
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Name</span>
+                            {{module.name}}
+                        </td>
+                        <td style="max-width: 300px;">
+                            <span class="p-column-title">Description</span>
+                            <div class="description-cell">{{module.description}}</div>
+                        </td>
+                        
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Teaching Hours</span>
+                            {{module.teaching_hours}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">ECTS</span>
+                            {{module.ects}}
+                        </td>
+                        <td>
+                            <div class="p-tag p-tag-rounded skill-tag" *ngFor="let skill of module.skills; let last = last">
+                                {{ skill.name }}
+                            </div>
+                        </td>
+                        
+                        
+                        <td>
+                            <div class="flex justify-content-end"> <!-- Align buttons to the right -->
+                                <button pButton pRipple icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editModule(module)"></button>
+                                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                                    (click)="deleteModule(module)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog [(visible)]="moduleDialog" [style]="{width: '450px'}" header="Module Details" [modal]="true"
+            class="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input id="name" pInputText [(ngModel)]="module.name" type="text" required />
+                    <small class="ng-invalid ng-dirty" *ngIf="submitted && !module.name">Name is required.</small>
+                </div>
+                <div class="field">
+                    <label for="description">Description</label>
+                    <textarea id="description" pInputTextarea [(ngModel)]="module.description" rows="3" cols="20" required></textarea>
+                    <small class="ng-invalid ng-dirty" *ngIf="submitted && !module.description">Description is required.</small>
+                </div>
+                <div class="field">
+                    <label for="teaching_hours">Teaching Hours</label>
+                    <input type="number" pInputText id="teaching_hours" [(ngModel)]="module.teaching_hours" required />
+                    <small class="ng-invalid ng-dirty" *ngIf="submitted && !module.teaching_hours">Teaching Hours is required.</small>
+                </div>
+                <div class="field">
+                    <label for="ects">ECTS</label>
+                    <input type="number" pInputText id="ects" [(ngModel)]="module.ects" required />
+                    <small class="ng-invalid ng-dirty" *ngIf="submitted && !module.ects">ECTS is required.</small>
+                </div>
+                <div class="field">
+                    <label for="skills">Skills</label>
+                    <div *ngFor="let skill of availableSkills" class="checkbox-container">
+                        <input type="checkbox" [id]="'skill_' + skill.id" [value]="skill" [checked]="isSkillSelected(skill)"
+                            (change)="toggleSelection(skill, $event.target.checked)">
+                        <label [for]="'skill_' + skill.id">{{ skill.name }}</label>
+                    </div>
+                </div>
+                
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                    (click)="saveModule()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteModuleDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="module">Are you sure you want to delete <b>{{module.name}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deleteModuleDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+                    (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteModulesDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span>Are you sure you want to delete selected modules?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deleteModulesDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes"
+                    (click)="confirmDeleteSelected()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>
