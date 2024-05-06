@@ -25,11 +25,13 @@ export class TokenService {
 }*/
 
 
-setToken(token: string, name: string, surname: string, role: Role) {
+setToken(token: string, name: string, surname: string, role: Role, idU: string,mfa:string) {
   localStorage.setItem('jwt', token);
   localStorage.setItem('nameU', name);
   localStorage.setItem('surnameU', surname);
   localStorage.setItem('role', role); // Assurez-vous que role est une chaîne de caractères ou convertissez-le en une chaîne si nécessaire
+  localStorage.setItem('idU', idU);
+  localStorage.setItem('mfaEnabled', mfa);
 }
 get token(){
    return localStorage.getItem('jwt') as string;

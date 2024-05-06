@@ -1,3 +1,28 @@
+<style>
+    .toggle-button {
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .toggle-button.active {
+    background-color: #4caf50;
+    border-color: #4caf50;
+    color: #ffffff;
+  }
+  
+  .icon {
+    margin-right: 10px;
+  }
+</style>
+
+  
+
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
         <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="logo">
@@ -12,6 +37,13 @@
         <i class="pi pi-ellipsis-v"></i>
     </button>
 
+    <button class="toggle-button" [class.active]="mfaEnabled" (click)="toggleState()">
+        <span *ngIf="mfaEnabled">2FA Activée</span>
+        <span *ngIf="!mfaEnabled">2FA Désactivée</span>
+    </button>
+
+    
+   
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
         <button class="p-link layout-topbar-button">
             <i class="pi pi-calendar"></i>
@@ -21,9 +53,12 @@
             <i class="pi pi-user"></i>
             <span>Profile</span>
         </button>
-        <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
+        <button class="p-link layout-topbar-button" (click)="logout()">
             <i class="pi pi-cog"></i>
-            <span>Settings</span>
+            <span>Logout</span>
         </button>
+
+       
+
     </div>
 </div>

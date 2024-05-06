@@ -103,10 +103,40 @@
                     <textarea id="email" pInputTextarea [(ngModel)]="registerRequest.email" required rows="2" cols="40"></textarea>
                 </div>
 
-                <div class="field">
+               <!-- <div class="field">
                     <label for="password">Password</label>
-                    <textarea id="password" pInputTextarea [(ngModel)]="registerRequest.password" required rows="2" cols="70"></textarea>
+                    <textarea id="password" pInputTextarea [(ngModel)]="registerRequest.password" required  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$" rows="2" cols="70"></textarea>
+                
+                    
                 </div>
+-->
+
+
+
+                <div class="field">
+                    <label for="password">Mot de passe</label>  <textarea id="password" pInputTextarea [(ngModel)]="registerRequest.password" name="password" rows="2" cols="70"
+                              [formControl]="password">
+                    </textarea>
+                    <div *ngIf="password.invalid && (password.dirty || password.touched)" class="alert alert-danger">
+                      <div *ngIf="password.errors.required">
+                        Le mot de passe est requis.
+                      </div>
+                      <div *ngIf="password.errors.pattern">
+                        Le mot de passe doit contenir au moins 8 caractères, y compris au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial.
+                      </div>
+                      <div *ngIf="password.errors.passwordStrength">
+                        Le mot de passe doit être plus fort (ex: inclure des caractères spéciaux).
+                      </div>
+                    </div>
+                  </div>
+
+
+
+
+
+
+
+
                 <div class="field">
                     <label for="telnum">Tel</label>
                     <textarea id="telnum" pInputTextarea [(ngModel)]="registerRequest.telnum" required rows="2" cols="20"></textarea>

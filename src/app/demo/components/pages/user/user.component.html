@@ -179,7 +179,10 @@
         </p-dialog>
 
 
-<!----->
+
+
+
+
 
 <p-dialog [(visible)]="userEditDialog" [style]="{width: '450px'}" header="User Details" [modal]="true"
             class="p-fluid">
@@ -225,7 +228,7 @@
                     <p-dropdown id="role" [(ngModel)]="selectedRole" [options]="roles" optionLabel="label" optionValue="value"></p-dropdown>
                 </div>
 
-                -->
+            -->
             </ng-template>
              <ng-template pTemplate="footer">
                 <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialogE()"></button>
@@ -233,7 +236,6 @@
             </ng-template>
        
         </p-dialog>
-
 
 
 

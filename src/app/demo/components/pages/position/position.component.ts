@@ -5,7 +5,7 @@ import { Position } from 'src/app/demo/api/position';
 
 import { Table } from 'primeng/table';
 import { PositionService } from 'src/app/demo/service/position.service'; 
-
+import { UserService } from 'src/app/demo/service/user.service'; 
 
 @Component({
   selector: 'app-position',
@@ -31,7 +31,31 @@ export class PositionComponent {
     cols: any[] = [];
     rowsPerPageOptions = [5, 10, 20];
 
-    constructor(private positionService: PositionService, private messageService: MessageService) { }
+    constructor(private userService:UserService,private positionService: PositionService, private messageService: MessageService) { }
+
+    notShow:boolean=false;
+   showNotAffected(){
+
+    this.notShow=true;
+   }
+
+    //listId:[];
+    positionsNot: Position[] = [];
+
+    affichenotAffectedPos() {
+    //    return this.http.get<any>(`${this.baseUrl}/notassa`);
+
+
+
+        this.userService.affichenotAffectedPos().subscribe(data => this.positionsNot = data);
+       console.log("ok");
+        this.cols = [
+            { field: 'nameP', header: 'NameP' },
+            { field: 'shiftHours', header: 'ShiftHours' }
+        ];
+    
+      
+      }
 
     ngOnInit() {
         this.positionService.getAllPositions().subscribe(data => this.positions = data);

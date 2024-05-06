@@ -1,3 +1,4 @@
+import { LoginComponent } from "../components/auth/login/login.component";
 import { Role } from "./role";
 
 export class AuthenticationResponse {
@@ -5,5 +6,10 @@ export class AuthenticationResponse {
     nameU:string;
     surnameU:string;
     role:Role;
+    idU:number;
 
+   mfaEnabled:boolean;
+   secretImageUri:string;
+
+   
 }

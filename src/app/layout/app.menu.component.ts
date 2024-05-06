@@ -33,7 +33,10 @@ export class AppMenuComponent implements OnInit {
                         { label: 'Donation', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/donation'] },
                         { label: 'User', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin'] },
                         { label: 'Position', icon: 'pi pi-fw pi-bookmark', routerLink: ['/position'] },
-                        { label: 'academicSp', icon: 'pi pi-fw pi-bookmark', routerLink: ['/academicSp'] }
+                        { label: 'academicSp', icon: 'pi pi-fw pi-bookmark', routerLink: ['/academicSp'] },
+                        { label: 'Statistics', icon: 'pi pi-fw pi-bookmark', routerLink: ['/admin/stat'] }
+                   
+                   
                     ]
                 }
             ];

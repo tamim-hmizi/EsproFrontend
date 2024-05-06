@@ -7,6 +7,8 @@ import { PositionService } from 'src/app/demo/service/position.service';
 import { User } from 'src/app/demo/api/user';
 import { Position } from 'src/app/demo/api/position';
 import { Role } from 'src/app/demo/api/role';
+
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-user',
   
@@ -45,7 +47,7 @@ export class UserComponent {
   selectedPositions :Position[] = [];
 
   
-
+selectedPos
 
   selectedRole: String; 
   roles: any[] = [ 
@@ -74,7 +76,7 @@ export class UserComponent {
 
 
   
-  constructor(private userService: UserService,private positionService: PositionService,private messageService: MessageService) { }
+  constructor(private userService: UserService,private positionService: PositionService,private messageService: MessageService,private route:Router) { }
 //1er methode sera chargé avec chargement de ce compenent
   ngOnInit() {
     this.userService.getAllUsers().subscribe(data => this.users = data)
@@ -197,6 +199,12 @@ saveUser() {
                 this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Module Added', life: 3000 });
             });
   } else {
+
+
+    
+
+
+
       console.log('Updated Module Object:', this.user); // Log the module object before API call
       this.userService.updateUser(this.user.idU,this.user).subscribe(updatedUser => {
           const index = this.users.findIndex(m => m.idU === updatedUser.idU);
@@ -204,11 +212,13 @@ saveUser() {
               this.users[index] = updatedUser;
           }
           this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Module Updated', life: 3000 });
-      });
+     
+       //   this.route.navigate(['/admin']);
+        });
   }
   this.userDialog = false;
   this.userEditDialog = false;
-  
+
   this.user = {
     idU: 0,
     nameU: '',
@@ -220,6 +230,7 @@ saveUser() {
     role:null,
     positions: []
   };
+
 }
 
 
@@ -286,6 +297,11 @@ toggleSelection(position: Position, event: any) {
       this.selectedPositions = this.selectedPositions.filter(selectedPosition => selectedPosition.idP !== position.idP);
   }
 }
+
+
+
+
+
 
 
 }

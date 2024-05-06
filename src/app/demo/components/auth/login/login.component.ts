@@ -5,8 +5,10 @@ import {TokenService} from '../../../service/token.service';
 import {AuthenticationResponse} from 'src/app/demo/api/AuthenticationResponse';
 import {AuthenticationRequest} from 'src/app/demo/api/AuthenticationRequest';
 import {forgetpassService} from 'src/app/demo/service/forgetpass.service';
+import {verifyRequest} from 'src/app/demo/api/verifyRequest';
 
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
@@ -28,7 +30,20 @@ export class LoginComponent {
     email:"",
 
   }
-  authenticationResponse :AuthenticationResponse;
+
+
+ 
+  authenticationResponse :AuthenticationResponse={
+    jwt:'',
+    nameU:'',
+    surnameU:'',
+    role:null,
+    idU:null,
+
+   mfaEnabled:false,
+   secretImageUri:''
+
+  };
 
   errorMsg: Array<string>=[""];//pour afficher les erreurs
 
@@ -44,10 +59,14 @@ export class LoginComponent {
 
   changepwdDialog: boolean = false;
   
+  otpCodeQr:string;
   constructor(public layoutService: LayoutService,private authService: AuthService,private router:Router,private tokenService:TokenService,private forgetpwdService:forgetpassService) { }
 
-
-
+message:string;
+verifReqq : verifyRequest= {
+  email: '',
+  code: ''
+};
   ngOnInit() {
 
    this.newPwd = '';
@@ -55,19 +74,32 @@ export class LoginComponent {
    this.changePassword='';
    this.errorMsg=[''];
    this.errorMsgmail=[''];
-this.authenticationRequest.email="";
+//this.authenticationRequest.email="";
+this.authenticationResponse={
+  jwt:'',
+  nameU:'',
+  surnameU:'',
+  role:null,
+  idU:null,
+
+ mfaEnabled:false,
+ secretImageUri:''
+
+};
+this.otpCodeQr='';
   }
 
 
 
 
+ 
 
+handleLoginSuccess(data: AuthenticationResponse) {
+  this.tokenService.setToken(data.jwt, data.nameU, data.surnameU, data.role, data.idU.toString(), data.mfaEnabled.toString());
+  this.RedirectBasedOnRole(); // Rediriger vers la page d'accueil après le succès de la connexion
+}
 
-
-
-
-
-
+qrOpen:boolean=false;
 
   login() {
     // vider le msg err chaque submitt
@@ -78,11 +110,20 @@ this.authenticationRequest.email="";
       next: (data) => {
         this.authenticationResponse = data;
        
-     
-this.tokenService.setToken(data.jwt,data.nameU,data.surnameU,data.role);
-       alert("login success");
-           // this.router.navigate(['/admin']);
-          this. RedirectBasedOnRole();
+       // this.errorMsg.push(data.mfaEnabled.toString());
+       if (data.mfaEnabled.toString()==="true") {
+        alert("cv"+data.mfaEnabled.toString());
+      //  this.tokenService.setToken(data.jwt,data.nameU,data.surnameU,data.role,null,data.mfaEnabled.toString());
+  
+        this.qrOpen = true; // Ouvrir le dialogue pour afficher le code QR
+      } else {
+        this.handleLoginSuccess(data);
+      }
+        
+//this.tokenService.setToken(data.jwt,data.nameU,data.surnameU,data.role,data.idU.toString(),data.mfaEnabled.toString());
+    // alert("login success");
+          //this.router.navigate(['/notfound']);
+  //    this.RedirectBasedOnRole();
 
       },
       error: (err) => {
@@ -99,6 +140,34 @@ this.tokenService.setToken(data.jwt,data.nameU,data.surnameU,data.role);
   
  ;
   }
+
+
+
+ verifyTfa() {
+  this.verifReqq = {
+    email: this.authenticationRequest.email,
+    code: this.otpCodeQr
+  };
+  //alert("verif"+ this.verifReqq.code);
+  this.authService.verifyCode(this.verifReqq).subscribe({
+    next: (data: AuthenticationResponse) => {
+     // this.handleLoginSuccess(data);
+     alert("ok");
+    },
+    error: (error) => {
+      console.error("Error during OTP verification:", error);
+      // Gérer l'échec de la vérification de l'OTP
+    }
+  });
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -245,7 +314,7 @@ RedirectBasedOnRole(){
     this.router.navigate(['/admin']);
     break;
   case 'USER':
-    this.router.navigate(['/skill']); 
+    this.router.navigate(['/profile']); 
     break; 
   default: 
     this.router.navigate(['/']); // Default landing page

@@ -8,7 +8,9 @@ import { RouterModule } from '@angular/router';
             { path: 'module', loadChildren: () => import('./module/module.module').then(m => m.ModuleModule) },
             { path: 'admin', loadChildren: () => import('./user/user.module').then(m => m.UserModule) },
             { path: 'position', loadChildren: () => import('./position/position.module').then(m => m.PositionModule) },
-             
+            
+           
+
             { path: 'profile', loadChildren: () => import('./profile/profile.module').then(m => m.ProfileModule) },
             
             { path: '**', redirectTo: '/notfound' }

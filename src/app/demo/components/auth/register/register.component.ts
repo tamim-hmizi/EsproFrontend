@@ -6,7 +6,7 @@ import{RegisterRequest} from 'src/app/demo/api/RegisterRequest';
 import {AuthService} from '../../../service/auth.service';
 import { Router } from '@angular/router';
 
-
+import { FormControl, Validators } from '@angular/forms';
 import {AuthenticationResponse} from 'src/app/demo/api/AuthenticationResponse';
 @Component({
   selector: 'app-register',
@@ -24,6 +24,19 @@ authenticationResponse:AuthenticationResponse;
 
   availablePositions: Position[] = [];
   selectedPositions :Position[] = [];
+  password = new FormControl('', [Validators.required, Validators.pattern('^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$')]);
+
+
+
+
+
+ passwordStrengthValidator(password: string): { [key: string]: boolean } | null {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!regex.test(password)) {
+      return { passwordStrength: true }; // Error object with key 'passwordStrength'
+    }
+    return null; // Valid password
+  }
 
   fetchAvailablePositions() {
     this.positionService.getAllPositions().subscribe(d => {
@@ -41,12 +54,26 @@ authenticationResponse:AuthenticationResponse;
       password: ''
       };
 
-//this.fetchAvailablePositions();
+
+
+
+
+    
+
+
+
+  //this.fetchAvailablePositions();
 
   }
   register() {
     // Vider toujours le message d'erreur à chaque soumission
     // this.errorMsg = [];
+    if (this.password.invalid) {
+      return; // Prevent submission if password is invalid
+    }
+  
+
+
     
     this.authService.register(this.registerRequest).subscribe({
       next: (data) => {
@@ -62,6 +89,11 @@ authenticationResponse:AuthenticationResponse;
           };
     
       
+
+
+
+
+
         this.router.navigate(['/auth/register']);
       },
       error: (err) => {

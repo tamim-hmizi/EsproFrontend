@@ -45,6 +45,28 @@ export class UserService {
   }
 
 
+
+
+  
+  getDisabledAccountCount(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/disabled-count`);
+  }
+  getEnabledAccountCount(): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/enabled-count`);
+  }
+
+  getUserCountByPosition(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/groupingPosByUser`);
+  }
+
+
+
+  
+  affichenotAffectedPos(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/notassaa`);
+  }
+
+
   /*login(email: string, password: string) {
       return this.http.post<any>(`${this.baseUrl}/login`, { email, password });
   }
