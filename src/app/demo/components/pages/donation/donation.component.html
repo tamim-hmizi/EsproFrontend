@@ -1,0 +1,71 @@
+<div class="grid">
+    <div class="col-12">
+      <div class="card px-6 py-6">
+        <p-toast></p-toast>
+  
+        <!-- Donation table -->
+        <p-table [columns]="cols" [value]="donations" [tableStyle]="{ 'min-width': '50rem' }">
+          <ng-template pTemplate="header" let-columns>
+              <tr>
+                  <th *ngFor="let col of columns">
+                      {{ col.header }}
+                  </th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData>
+              <tr>
+                  <td>
+                      <ng-container *ngIf="rowData.type === 'Credit/Debit Card'">
+                          <i class="pi pi-credit-card icon"></i>
+                      </ng-container>
+                      <ng-container *ngIf="rowData.type === 'Paypal'">
+                          <i class="pi pi-paypal icon"></i>
+                      </ng-container>
+                      <ng-container *ngIf="rowData.type === 'Cryptocurrency'">
+                          <i class="pi pi-bitcoin icon"></i>
+                      </ng-container>
+                      {{ rowData.type }}
+                  </td>
+                  <td>{{ rowData.amount }} $</td>
+                  <td>{{ rowData.status }}</td>
+                  <td>{{ rowData.user.firstname }} {{ rowData.user.lastname }}</td>
+              </tr>
+          </ng-template>
+      </p-table>
+      
+      <p-dialog [(visible)]="displayDialog" header="Add Donation" [modal]="true" [style]="{width:'450px'}">
+          <ng-template pTemplate="content">
+              <!-- Donation form -->
+              <form [formGroup]="donationForm" (ngSubmit)="onSubmit()">
+                  <div class="field">
+                      <label for="type">Type</label>
+                      <input type="text" pInputText id="type" formControlName="type" />
+                      <!-- Add error message if needed -->
+                  </div>
+                  <div class="field">
+                      <label for="amount">Amount</label>
+                      <input type="number" pInputText id="amount" formControlName="amount" />
+                      <!-- Add error message if needed -->
+                  </div>
+                  <div class="field">
+                      <label for="status">Status</label>
+                      <input type="text" pInputText id="status" formControlName="status" />
+                      <!-- Add error message if needed -->
+                  </div>
+                  <!-- Add more form fields as needed -->
+              </form>
+          </ng-template>
+          <ng-template pTemplate="footer">
+              <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+                  (click)="hideDialog()"></button>
+              <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+                  type="submit"></button>
+          </ng-template>
+      </p-dialog>
+      
+  
+        <!-- Donation form dialog -->
+      </div>
+    </div>
+  </div>
+  

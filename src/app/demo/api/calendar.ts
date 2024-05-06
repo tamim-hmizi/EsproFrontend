@@ -1,4 +1,4 @@
-export interface calendar {
+export interface Calendar {
     id: number;
     academic_year: string;
     start_date: Date;

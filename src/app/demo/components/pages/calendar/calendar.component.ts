@@ -1,6 +1,6 @@
 import { AccessRoutingModule } from './../../auth/access/access-routing.module';
 import { Component, OnInit } from '@angular/core';
-import { calendar } from 'src/app/demo/api/calendar';
+import { Calendar } from 'src/app/demo/api/calendar';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { CalendarService } from 'src/app/demo/service/calendar.service';
@@ -15,15 +15,15 @@ export class CalendarComponent implements OnInit {
     calendarDialog: boolean = false;
     deleteCalendarDialog: boolean = false;
     deleteCalendarsDialog: boolean = false;
-    calendars: calendar[] = [];
-    calendar: calendar = {
+    calendars: Calendar[] = [];
+    calendar: Calendar = {
         id: 0,
         academic_year: '',
         archive: '',
         start_date: new Date(),
         end_date: new Date(),
     };
-    selectedcalendars: calendar[] = [];
+    selectedcalendars: Calendar[] = [];
     submitted: boolean = false;
     cols: any[] = [];
     rowsPerPageOptions = [5, 10, 20];
@@ -75,12 +75,12 @@ export class CalendarComponent implements OnInit {
         this.deleteCalendarsDialog = true;
     }
 
-    editcalendar(calendar: calendar) {
+    editcalendar(calendar: Calendar) {
         this.calendar = { ...calendar };
         this.calendarDialog = true;
     }
 
-    deletecalendar(calendar: calendar) {
+    deletecalendar(calendar: Calendar) {
         this.calendar = { ...calendar };
         this.deleteCalendarDialog = true;
     }

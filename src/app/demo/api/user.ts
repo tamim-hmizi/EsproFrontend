@@ -1,12 +1,9 @@
-export interface user {
-    idu: number;
-    nameu: string;
-    surnameu: string;
-    password: string;
-    email: string;
-    telnum: number;
+export interface User {
+    id: number;
+    firstname: string;
+    lastname: string;
     role: string;
-    img: string;
-    positions: Object[];
-    acadmics: Object[];
+    email: string;
+    password: string;
+    telephone_number: number;
 }

@@ -1,7 +1,13 @@
-import { calendar } from './calendar';
+import { Calendar } from './calendar';
+import { Module } from './module';
+import { User } from './user';
+import { Classroom } from './classroom';
 
-export interface affectation {
+export interface Affectation {
     id: number;
     semester: number;
-    calendars: calendar[];
+    calendar: Calendar;
+    module: Module;
+    user: User;
+    classroom: Classroom;
 }
