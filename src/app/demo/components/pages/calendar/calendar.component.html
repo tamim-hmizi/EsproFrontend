@@ -63,10 +63,11 @@
               <th style="width: 3rem">
                 <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
               </th>
-              <th>Academic_year</th>
+              <th>Academic year</th>
               <th>Archive</th>
               <th>Start Date</th>
               <th>End Date</th>
+              <th>Calendar</th>
               <th></th>
             </tr>
           </ng-template>
@@ -76,7 +77,7 @@
                 <p-tableCheckbox [value]="calendar"></p-tableCheckbox>
               </td>
               <td style="width: 14%; min-width: 10rem">
-                <span class="p-column-title">Academic_year</span>
+                <span class="p-column-title">Academic year</span>
                 {{ calendar.academic_year }}
               </td>
               <td style="width: 14%; min-width: 10rem">
@@ -90,6 +91,15 @@
               <td style="width: 14%; min-width: 10rem">
                 <span class="p-column-title">End Date</span>
                 {{ calendar.end_date | date: 'mediumDate' }}
+              </td>
+              <td>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-calendar"
+                  class="p-button-rounded p-button-info"
+                  (click)="openCalendarDialog(calendar)"
+                ></button>
               </td>
               <td>
                 <div class="flex justify-content-end">
@@ -115,7 +125,7 @@
       </div>
     </div>
   </div>
-  
+
   <p-dialog
     [(visible)]="calendarDialog"
     [style]="{ width: '450px' }"
@@ -224,6 +234,34 @@
       ></button>
     </ng-template>
   </p-dialog>
+
+  <p-dialog
+  [(visible)]="showCalendarDialog"
+  [style]="{ width: '420px' , height: '550px' }"
+  header="Calendar"
+  [modal]="true"
+>
+  <ng-template pTemplate="content">
+    <div style="padding: 10px;">
+      <p-calendar
+        [value]="highlightedDates"
+        [inline]="true"
+        selectionMode="multiple"
+      ></p-calendar>
+    </div>
+  </ng-template>
+  
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      icon="pi pi-times"
+      class="p-button-text"
+      label="Close"
+      (click)="showCalendarDialog = false"
+    ></button>
+  </ng-template>
+</p-dialog>
   
   <p-dialog
     [(visible)]="deleteCalendarsDialog"
@@ -257,3 +295,4 @@
       ></button>
     </ng-template>
   </p-dialog>
+  

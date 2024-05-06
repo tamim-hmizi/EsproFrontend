@@ -1,9 +1,11 @@
 import { AccessRoutingModule } from './../../auth/access/access-routing.module';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Calendar } from 'src/app/demo/api/calendar';
 import { MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { CalendarService } from 'src/app/demo/service/calendar.service';
+import { ChangeDetectorRef } from '@angular/core';
+import { formatDate } from '@angular/common';
 
 @Component({
     templateUrl: './calendar.component.html',
@@ -27,10 +29,13 @@ export class CalendarComponent implements OnInit {
     submitted: boolean = false;
     cols: any[] = [];
     rowsPerPageOptions = [5, 10, 20];
+    showCalendarDialog: boolean = false; // Controls visibility of the dialog
+    highlightedDates: Date[] = []; // Holds dates to be highlighted
 
     constructor(
         private CalendarService: CalendarService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private cdr: ChangeDetectorRef,
     ) {}
 
     ngOnInit() {
@@ -48,10 +53,29 @@ export class CalendarComponent implements OnInit {
         ];
     }
 
-    
+    openCalendarDialog(selectedCalendar: Calendar) {
+        const startDate = new Date(selectedCalendar.start_date);
+        const endDate = new Date(selectedCalendar.end_date);
+      
+        this.highlightedDates = this.getHighlightedDates(startDate, endDate);
+        
+        console.log("Highlighted dates:", this.highlightedDates);
+        
+        this.showCalendarDialog = true; // Open the dialog
+    }
 
-    // ... previous code ...
-  
+    getHighlightedDates(startDate: Date, endDate: Date): Date[] {
+        const dates = [];
+        let currentDate = new Date(startDate);
+    
+        while (currentDate <= endDate) {
+            dates.push(new Date(currentDate)); // Ensure correct date objects
+            currentDate.setDate(currentDate.getDate() + 1); // Increment day
+        }
+    
+        return dates;
+    }
+      
     onStartDateChange() {
       // Update the minimum end date when start date changes
       this.minEndDate = this.calendar.start_date;
