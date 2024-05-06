@@ -11,6 +11,7 @@ import { formatDate } from '@angular/common';
     templateUrl: './calendar.component.html',
     providers: [MessageService],
 })
+
 export class CalendarComponent implements OnInit {
     academic_year: string;
     minEndDate: Date; // Property to store the minimum end date
