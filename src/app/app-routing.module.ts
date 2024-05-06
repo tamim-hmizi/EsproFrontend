@@ -15,9 +15,9 @@ import { AppLayoutComponent } from "./layout/app.layout.component";
                     { path: 'donation', loadChildren: () => import('../app/demo/components/pages/donation/donation.module').then(m => m.DonationModule) },
                     { path: 'fundraiser', loadChildren: () => import('../app/demo/components/pages/fundraiser/fundraiser.module').then(m => m.FundraiserModule) },
                     { path: 'donate', loadChildren: () => import('../app/demo/components/pages/donate/donate.module').then(m => m.DonateModule) },
-                    {path: 'affectation',loadChildren: () =>import('../app/demo/components/pages/affectation/affectation.module').then((m) => m.AffectationModule)},
-                    {path: 'vacation',loadChildren: () =>import('./demo/components/pages/vacation/vacation.module').then((m) => m.VacationModule)},
-                    {path: 'calendar',loadChildren: () =>import('../app/demo/components/pages/calendar/calendar.module').then((m) => m.CalendarModule)},
+                    { path: 'affectation',loadChildren: () =>import('../app/demo/components/pages/affectation/affectation.module').then((m) => m.AffectationModule)},
+                    { path: 'vacation',loadChildren: () =>import('./demo/components/pages/vacation/vacation.module').then((m) => m.VacationModule)},
+                    { path: 'calendar',loadChildren: () =>import('../app/demo/components/pages/calendar/calendar.module').then((m) => m.CalendarModule)},
                 
             
         ]
