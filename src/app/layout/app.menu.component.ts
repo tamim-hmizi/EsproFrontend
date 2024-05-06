@@ -1,6 +1,8 @@
 import { OnInit } from '@angular/core';
 import { Component } from '@angular/core';
 import { LayoutService } from './service/app.layout.service';
+import { NgIf } from '@angular/common';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
     selector: 'app-menu',
@@ -10,9 +12,19 @@ export class AppMenuComponent implements OnInit {
 
     model: any[] = [];
 
-    constructor(public layoutService: LayoutService) { }
+    constructor(public layoutService: LayoutService, private jwtHelper: JwtHelperService) { }
 
     ngOnInit() {
+        // Get the JWT token from wherever you store it (e.g., localStorage)
+        const token = localStorage.getItem('jwt');
+
+        // Decode the token to extract user information
+        const decodedToken = this.jwtHelper.decodeToken(token);
+        
+        // Check if the user has the admin role
+        const isAdmin = decodedToken && decodedToken.role === 'ADMIN';
+
+        // Set the menu items based on the user's role
         this.model = [
             {
                 label: 'Home',
@@ -21,16 +33,20 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
-                label: 'Affectations',
-                items: [
+                label: isAdmin ? 'ADMIN' : 'USER',
+                items: isAdmin ? [
                     { label: 'Skill', icon: 'pi pi-fw pi-star', routerLink: ['/skill'] },
                     { label: 'Module', icon: 'pi pi-fw pi-book', routerLink: ['/module'] },
                     { label: 'Fundraiser', icon: 'pi pi-fw pi-calendar-plus', routerLink: ['/fundraiser'] },
-                    { label: 'Donation', icon: 'pi pi-fw pi-dollar', routerLink: ['/donation'] },
-                    { label: 'Donate', icon: 'pi pi-fw pi-bookmark', routerLink: ['/donate'] },
+                    { label: 'Donation', icon: 'pi pi-fw pi-dollar', routerLink: ['/donation'] }
+                ] : [
+                    { label: 'Donate', icon: 'pi pi-fw pi-bookmark', routerLink: ['/donate'] }
+                ]
+            }
+        ];
+    }
 
-
-
+   
                     // { label: 'Classroom', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/classroom'] },
                     // { label: 'Level', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/level'] },
                     // { label: 'Option', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/option'] },
@@ -38,19 +54,6 @@ export class AppMenuComponent implements OnInit {
                     // { label: 'Sponsor', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/sponsor'] },
                     
                     
-                    // { label: 'Button', icon: 'pi pi-fw pi-box', routerLink: ['/uikit/button'] },
-                    // { label: 'Table', icon: 'pi pi-fw pi-table', routerLink: ['/uikit/table'] },
-                    // { label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/uikit/list'] },
-                    // { label: 'Tree', icon: 'pi pi-fw pi-share-alt', routerLink: ['/uikit/tree'] },
-                    // { label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/uikit/panel'] },
-                    // { label: 'Overlay', icon: 'pi pi-fw pi-clone', routerLink: ['/uikit/overlay'] },
-                    // { label: 'Media', icon: 'pi pi-fw pi-image', routerLink: ['/uikit/media'] },
-                    // { label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/uikit/menu'], routerLinkActiveOptions: { paths: 'subset', queryParams: 'ignored', matrixParams: 'ignored', fragment: 'ignored' } },
-                    // { label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: ['/uikit/message'] },
-                    // { label: 'File', icon: 'pi pi-fw pi-file', routerLink: ['/uikit/file'] },
-                    // { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/uikit/charts'] },
-                ]
-            }
-        ];
-    }
+                    
+
 }

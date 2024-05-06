@@ -9,6 +9,7 @@ import { Donation } from 'src/app/demo/api/donation';
 import { DonationService } from '../../../service/donation.service';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { FundraiserService } from 'src/app/demo/service/fundraiser.service';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 
 
@@ -41,6 +42,7 @@ export class DonateComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchFundraisers();
+    // this.getUserIdFromToken();
     if (this.donationForm) {
       const amountControl = this.donationForm.get('amount');
       if (amountControl) {
@@ -49,7 +51,20 @@ export class DonateComponent implements OnInit {
         });
       }
     }
+
+   
   }
+
+  // getUserIdFromToken(): void {
+  //   const token = localStorage.getItem('jwt');
+  //   console.log("token",token);
+  //   if (token) {
+  //     const jwtHelper = new JwtHelperService();
+  //     const decodedToken = jwtHelper.decodeToken(token);
+  //     console.log("7nich",decodedToken);
+  //    // this.userId = decodedToken.sub;
+  //   }
+  // }
 
   fetchFundraisers(): void {
     this.http.get<Fundraiser[]>('http://localhost:8089/esprobackend/fundraiser/retrieve-all-fundraisers')
@@ -120,6 +135,7 @@ export class DonateComponent implements OnInit {
             amount: amount,
             status: 'Complete',
             fundraiserId: fundraiserId // Make sure fundraiserId is passed correctly
+
         };
 
         this.donationService.addDonation(donation)
