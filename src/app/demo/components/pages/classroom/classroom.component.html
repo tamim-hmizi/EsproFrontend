@@ -1,0 +1,364 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button
+                            (click)="generateAllClassroomSalles()"
+                            class="p-button-primary mr-3 "
+                            icon="pi pi-check"
+                            label="Generate Rooms"
+                            pButton
+                            pRipple
+                        ></button>
+                    </div>
+                    <div class="my-2">
+                        <button
+                            (click)="generateAllClassroomsModules()"
+                            class="p-button-primary "
+                            icon="pi pi-check"
+                            label="Generate Modules"
+                            pButton
+                            pRipple
+                        ></button>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <div class="my-2">
+                        <button
+                            (click)="openNew()"
+                            class="p-button-success mr-2"
+                            icon="pi pi-plus"
+                            label="New"
+                            pButton
+                            pRipple
+                        ></button>
+                        <button
+                            (click)="deleteSelectedClassrooms()"
+                            [disabled]="
+                                !selectedClassrooms ||
+                                !selectedClassrooms.length
+                            "
+                            class="p-button-danger"
+                            icon="pi pi-trash"
+                            label="Delete"
+                            pButton
+                            pRipple
+                        ></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table
+                #dt
+                [(selection)]="selectedClassrooms"
+                [columns]="cols"
+                [globalFilterFields]="['name']"
+                [paginator]="true"
+                [rowHover]="true"
+                [rowsPerPageOptions]="[10, 20, 30]"
+                [rows]="10"
+                [showCurrentPageReport]="true"
+                [value]="classrooms"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                dataKey="id"
+                responsiveLayout="scroll"
+                selectionMode="multiple"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
+                        <h5 class="m-0">Manage Classrooms</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                (input)="onGlobalFilter(dt, $event)"
+                                class="w-full sm:w-auto"
+                                pInputText
+                                placeholder="Search..."
+                                type="text"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="name">
+                            Name
+                            <p-sortIcon field="name"></p-sortIcon>
+                        </th>
+                        <!--                        <th pSortableColumn="level">-->
+                        <!--                            Level-->
+                        <!--                            <p-sortIcon field="level"></p-sortIcon>-->
+                        <!--                        </th>-->
+                        <!--                        <th pSortableColumn="option">-->
+                        <!--                            Option-->
+                        <!--                            <p-sortIcon field="option"></p-sortIcon>-->
+                        <!--
+                                             </th>-->
+                        <th pSortableColumn="school_year">
+                            School Year
+                            <p-sortIcon field="school_year"></p-sortIcon>
+                        </th>
+
+
+                        <th pSortableColumn="class">
+                            Room
+                            <p-sortIcon field="class"></p-sortIcon>
+                        </th>
+
+                        <th pSortableColumn="modules">
+                            Modules
+                            <p-sortIcon field="modules"></p-sortIcon>
+                        </th>
+
+                    </tr>
+                </ng-template>
+                <ng-template let-classroom pTemplate="body">
+                    <tr>
+                        <td>
+                            <p-tableCheckbox
+                                [value]="classroom"
+                            ></p-tableCheckbox>
+                        </td>
+                        <td style="width: 14%; min-width: 10rem">
+                            <span class="p-column-title">Name</span>
+                            {{ classroom.name }}
+                        </td>
+                        <td style="width: 14%; min-width: 10rem">
+                            <span class="p-column-title">School Year</span>
+                            {{ getYear(classroom.startYear) }} / {{ getYear(classroom.endYear) }}
+                        </td>
+                        <td style="width: 14%; min-width: 10rem">
+                            <span class="p-column-title">Class</span>
+                            {{ classroom.classroomSalle }}
+                        </td>
+                        <td>
+                            <div
+                                *ngFor="let mod of classroom.modules; let last = last"
+                                class="p-tag p-tag-rounded module-tag"
+                            >
+                                {{ mod.name }}
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="flex justify-content-end">
+                                <!-- Align buttons to the right -->
+                                <button
+                                    (click)="editClassroom(classroom)"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    icon="pi pi-pencil"
+                                    pButton
+                                    pRipple
+                                ></button>
+                                <button
+                                    (click)="deleteClassroom(classroom)"
+                                    class="p-button-rounded p-button-warning"
+                                    icon="pi pi-trash"
+                                    pButton
+                                    pRipple
+                                ></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog
+            [(visible)]="classroomDialog"
+            [modal]="true"
+            [style]="{ width: '450px', height: '600px'}"
+            class="p-fluid"
+            header="Classroom Details"
+        >
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input
+                        [(ngModel)]="classroom.name"
+                        id="name"
+                        pInputText
+                        required
+                        type="text"
+                    />
+                </div>
+                <div class="field">
+                    <label for="startYear">Start Year</label>
+                    <p-calendar
+                        [(ngModel)]="classroom.startYear"
+                        dateFormat="yy"
+                        id="startYear"
+                        pInputText
+                        required
+                        type="number"
+                        view="year">
+                    </p-calendar>
+                </div>
+                <div class="field">
+                    <label for="endYear">End Year</label>
+                    <p-calendar
+                        [(ngModel)]="classroom.endYear"
+                        dateFormat="yy"
+                        id="endYear"
+                        pInputText
+                        required
+                        type="number"
+                        view="year"
+                    ></p-calendar>
+                </div>
+                <div class="field">
+                    <label for="classroomSalle">Classroom</label>
+                    <input
+                        [(ngModel)]="classroom.classroomSalle"
+                        id="classroomSalle"
+                        pInputText
+                        required
+                        type="text"
+                    />
+                </div>
+                <!--                <div class="field">-->
+                <!--                    <label for="level">Level</label>-->
+                <!--                    <input-->
+                <!--                        [(ngModel)]="classroom.level"-->
+                <!--                        id="level"-->
+                <!--                        pInputText-->
+                <!--                        required-->
+                <!--                        type="number"-->
+                <!--                    />-->
+                <!--                </div>-->
+                <!--                <div class="field">-->
+                <!--                    <label for="option">Option</label>-->
+                <!--                    <input-->
+                <!--                        [(ngModel)]="classroom.option"-->
+                <!--                        id="option"-->
+                <!--                        pInputText-->
+                <!--                        required-->
+                <!--                        type="text"-->
+                <!--                    />-->
+                <!--                </div>-->
+
+                <div class="field">
+                    <label for="modules">Modules</label>
+                    <div
+                        *ngFor="let module of availableModules"
+                        class="checkbox-container"
+                    >
+                        <input
+                            (change)="
+                                toggleSelectionModule(
+                                    module,
+                                    $event.target.checked
+                                )
+                            "
+                            [checked]="isSelectedModule(module)"
+                            [id]="'module_' + module.id"
+                            [value]="module"
+
+                            type="checkbox"
+                        />
+                        <label [for]="'module_' + module.id">{{
+                                module.name
+                            }}</label>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button
+                    (click)="hideDialog()"
+                    class="p-button-text"
+                    icon="pi pi-times"
+                    label="Cancel"
+                    pButton
+                    pRipple
+                ></button>
+                <button
+                    (click)="saveClassroom()"
+                    class="p-button-text"
+                    icon="pi pi-check"
+                    label="Save"
+                    pButton
+                    pRipple
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog
+            [(visible)]="deleteClassroomDialog"
+            [modal]="true"
+            [style]="{ width: '450px' }"
+            header="Confirm"
+        >
+            <div class="flex align-items-center justify-content-center">
+                <i
+                    class="pi pi-exclamation-triangle mr-3"
+                    style="font-size: 2rem"
+                ></i>
+                <span *ngIf="classroom"
+                >Are you sure you want to delete <b>{{ classroom.name }}</b
+                >?</span
+                >
+            </div>
+            <ng-template pTemplate="footer">
+                <button
+                    (click)="deleteClassroomDialog = false"
+                    class="p-button-text"
+                    icon="pi pi-times"
+                    label="No"
+                    pButton
+                    pRipple
+                ></button>
+                <button
+                    (click)="confirmDelete()"
+                    class="p-button-text"
+                    icon="pi pi-check"
+                    label="Yes"
+                    pButton
+                    pRipple
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog
+            [(visible)]="deleteClassroomsDialog"
+            [modal]="true"
+            [style]="{ width: '450px' }"
+            header="Confirm"
+        >
+            <div class="flex align-items-center justify-content-center">
+                <i
+                    class="pi pi-exclamation-triangle mr-3"
+                    style="font-size: 2rem"
+                ></i>
+                <span>Are you sure you want to delete selected classrooms?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button
+                    (click)="deleteClassroomsDialog = false"
+                    class="p-button-text"
+                    icon="pi pi-times"
+                    label="No"
+                    pButton
+                    pRipple
+                ></button>
+                <button
+                    (click)="confirmDeleteSelected()"
+                    class="p-button-text"
+                    icon="pi pi-check"
+                    label="Yes"
+                    pButton
+                    pRipple
+                ></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

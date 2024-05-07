@@ -1,0 +1,58 @@
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Increased margin between each checkbox container */
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px; /* Increased space between checkbox and label */
+    cursor: pointer;
+}
+
+.checkbox-container label {
+    cursor: pointer;
+    font-size: 16px; /* Increased font size for better readability */
+}
+
+/* Ajoutez cette classe dans votre fichier CSS */
+.p-button-disabled {
+    background-color: #d3d3d3;  /* Couleur grise */
+    color: #bb0505;             /* Texte gris */
+    cursor: not-allowed;        /* Indiquer que le bouton est désactivé */
+  }
+  
+  .rdi-badge {
+    display: inline-block;
+    padding: 0.3em 0.6em;
+    border-radius: 0.5em;
+    background-color: #007bff;  /* Bleu par défaut */
+    color: #ffffff;  /* Couleur du texte blanche */
+    font-size: 0.9em;
+    margin-right: 0.5em;  /* Espace entre les badges */
+}
+
+.rdi-badge.rdi-urgent {
+    background-color: #ff5733;  /* Rouge pour RDI urgent */
+}
+
+.rdi-badge.rdi-important {
+    background-color: #ffb300;  /* Jaune pour RDI important */
+}
+
+.rdi-badge.rdi-normal {
+    background-color: #28a745;  /* Vert pour RDI normal */
+}
+.field {
+    margin-bottom: 15px;
+  }
+  
+  .field-invalid {
+    border-color: red; /* Rend le bord du champ rouge */
+    background-color: #ffe5e5; /* Change le fond pour indiquer l'erreur */
+  }
+  
+  .error-message {
+    color: red; /* Couleur du texte d'erreur */
+    font-size: 0.9em; /* Ajuste la taille du texte d'erreur */
+  }
+  

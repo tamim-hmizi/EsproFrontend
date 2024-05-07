@@ -1,0 +1,26 @@
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Increased margin between each checkbox container */
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px; /* Increased space between checkbox and label */
+    cursor: pointer;
+}
+
+.checkbox-container label {
+    cursor: pointer;
+    font-size: 16px; /* Increased font size for better readability */
+}
+
+
+.p-dropdown-panel {
+    z-index: 1050; /* Assurez-vous que le dropdown est au-dessus du dialogue */
+  }
+  
+  .p-dialog {
+    overflow: visible; /* Permet au contenu de déborder si nécessaire */
+  }
+  
+  

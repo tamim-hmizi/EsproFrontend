@@ -1,0 +1,92 @@
+<!-- eventclient.component.html -->
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <div class="flex justify-content-between align-items-center mb-4">
+                <form
+                    [formGroup]="searchForm"
+                    (ngSubmit)="searchEvents()"
+                    class="flex flex-wrap gap-2"
+                >
+                    <input
+                        type="text"
+                        formControlName="searchTerm"
+                        placeholder="Search events..."
+                        class="p-inputtext"
+                    />
+                    <button
+                        type="submit"
+                        pButton
+                        label="Search"
+                        icon="pi pi-search"
+                        [disabled]="isDisplayingScraped"
+                    ></button>
+                </form>
+
+                <button
+                    [disabled]="isDisplayingScraped"
+                    (click)="sortEventsByDate()"
+                    pButton
+                    icon="pi pi-sort-alt"
+                    [label]="'Sort by date ' + (isDateAsc ? '↑' : '↓')"
+                ></button>
+
+                <!-- Toggle button to switch between event lists -->
+                <button
+                    (click)="toggleEventDisplay()"
+                    pButton
+                    [label]="
+                        isDisplayingScraped
+                            ? 'Show Regular Events'
+                            : 'Show Scraped Events'
+                    "
+                    icon="pi pi-sync"
+                ></button>
+            </div>
+
+            <div>
+                <div class="event-list-container" *ngIf="!isDisplayingScraped">
+                    <!-- Display regular events -->
+                    <div class="event-card" *ngFor="let event of events">
+                        <div class="image-container">
+                            <div class="event-banner">
+                                <img
+                                    [src]="event.banner"
+                                    [alt]="event.title + ' image.'"
+                                />
+                            </div>
+                            <div class="event-logo">
+                                <img
+                                    [src]="event.logo"
+                                    [alt]="event.title + ' image.'"
+                                />
+                            </div>
+                        </div>
+                        <h3>{{ event.title }}</h3>
+                        <p>{{ event.date | date : "shortDate" }}</p>
+                        <p>
+                            <a [routerLink]="['/eventclient', event.id]"
+                                >More Info</a
+                            >
+                        </p>
+                    </div>
+                </div>
+
+                <div class="event-list-container" *ngIf="isDisplayingScraped">
+                    <!-- Display scraped events -->
+                    <div class="event-card" *ngFor="let event of scrapedEvents">
+                        <img
+                            [src]="event.image"
+                            [alt]="event.title + ' image.'"
+                        />
+                        <h4>{{ event.name }}</h4>
+                        <p>{{ event.date }}</p>
+                        <p>
+                            <a [href]="event.url" target="_blank">More Info</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
