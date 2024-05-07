@@ -29,20 +29,61 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Home',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
-                ]
+                    {
+                        label: 'Dashboard',
+                        icon: 'pi pi-fw pi-home',
+                        routerLink: ['/dashboard'],
+                    },
+                ],
             },
             {
                 label: isAdmin ? 'ADMIN' : 'USER',
-                items: isAdmin ? [
-                    { label: 'Skill', icon: 'pi pi-fw pi-star', routerLink: ['/skill'] },
-                    { label: 'Module', icon: 'pi pi-fw pi-book', routerLink: ['/module'] },
-                    { label: 'Fundraiser', icon: 'pi pi-fw pi-calendar-plus', routerLink: ['/fundraiser'] },
-                    { label: 'Donation', icon: 'pi pi-fw pi-dollar', routerLink: ['/donation'] }
-                ] : [
-                    { label: 'Donate', icon: 'pi pi-fw pi-bookmark', routerLink: ['/donate'] }
-                ]
-            }
+                items: isAdmin
+                    ? [
+                          {
+                              label: 'Skill',
+                              icon: 'pi pi-fw pi-star',
+                              routerLink: ['/skill'],
+                          },
+                          {
+                              label: 'Module',
+                              icon: 'pi pi-fw pi-book',
+                              routerLink: ['/module'],
+                          },
+                          {
+                              label: 'Fundraiser',
+                              icon: 'pi pi-fw pi-calendar-plus',
+                              routerLink: ['/fundraiser'],
+                          },
+                          {
+                              label: 'Donation',
+                              icon: 'pi pi-fw pi-dollar',
+                              routerLink: ['/donation'],
+                          },
+                          {
+                              label: 'Event',
+                              icon: 'pi pi-fw pi-bookmark',
+                              routerLink: ['/event'],
+                          },
+                          {
+                              label: 'Sponsor',
+                              icon: 'pi pi-fw pi-bookmark',
+                              routerLink: ['/sponsor'],
+                          },
+                      ]
+                    : [
+                          {
+                              label: 'Donate',
+                              icon: 'pi pi-fw pi-bookmark',
+                              routerLink: ['/donate'],
+                          },
+                          {
+                              label: 'Event',
+                              icon: 'pi pi-fw pi-bookmark',
+                              routerLink: ['/eventclient'],
+                          },
+                      ],
+            },
         ];
     }
 

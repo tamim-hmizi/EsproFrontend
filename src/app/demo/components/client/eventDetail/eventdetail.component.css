@@ -1,0 +1,78 @@
+.image-container {
+    position: relative;
+    width: 100%;
+    /* Takes the full width of the parent container */
+}
+
+.event-detail-banner {
+    width: 100%;
+    /* Takes the full width of the container */
+    height: 200px;
+    /* Fixed height for the banner */
+    overflow: hidden;
+    /* Ensures any overflow doesn't exceed the defined height */
+}
+
+.event-detail-banner img {
+    object-fit: cover;
+    /* Ensures the image covers the entire space */
+    width: 100%;
+    /* Takes full width */
+    height: 100%;
+    /* Fills the height while maintaining aspect ratio, allowing for cropping */
+}
+
+.event-detail-logo {
+    position: absolute;
+    /* Absolute positioning for the logo */
+    top: 90%;
+    /* Adjust this to align the logo */
+    left: 50%;
+    /* Centers the logo horizontally */
+    transform: translate(-50%, -50%);
+    /* Centers the logo both horizontally and vertically */
+    border-radius: 50%;
+    /* Makes the logo circular */
+    overflow: hidden;
+    /* Prevents overflow */
+    background-color: #fff;
+    /* Optional background for contrast */
+    padding: 5px;
+    /* Padding around the logo for spacing */
+}
+
+.event-detail-logo img , li > img {
+    width: 60px;
+    /* Sets a fixed width for the logo image */
+    height: 60px;
+    /* Sets the height for the logo */
+    border-radius: 50%;
+    /* Ensures the logo is circular */
+    object-fit: cover;
+    /* Ensures the logo fills its circular shape */
+}
+h2 , p , h3 {
+text-align: center;
+}
+ul{
+display: flex;
+justify-content: flex-start;
+align-items: center;
+gap: 50px;
+}
+li {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 20px;
+}
+.affiche-container{
+    display: flex;
+    justify-content: center;
+}
+.event-detail-affcihe
+{
+width: 400px;
+
+}

@@ -1,0 +1,284 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left"></ng-template>
+                <ng-template pTemplate="right">
+                    <div class="my-2">
+                        <button
+                            pButton
+                            pRipple
+                            label="New"
+                            icon="pi pi-plus"
+                            class="p-button-success mr-2"
+                            (click)="openNew()"
+                        ></button>
+                        <button
+                            pButton
+                            pRipple
+                            label="Delete"
+                            icon="pi pi-trash"
+                            class="p-button-danger"
+                            (click)="deleteSelectedsponsors()"
+                            [disabled]="
+                                !selectedsponsors || !selectedsponsors.length
+                            "
+                        ></button>
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table
+                #dt
+                [value]="sponsors"
+                [columns]="cols"
+                responsiveLayout="scroll"
+                [rows]="10"
+                [globalFilterFields]="['name']"
+                [paginator]="true"
+                [rowsPerPageOptions]="[10, 20, 30]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                [(selection)]="selectedsponsors"
+                selectionMode="multiple"
+                [rowHover]="true"
+                dataKey="id"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+                    >
+                        <h5 class="m-0">Manage Sponsors</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="onGlobalFilter(dt, $event)"
+                                placeholder="Search..."
+                                class="w-full sm:w-auto"
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th class="name-column">Name</th>
+                        <th class="description-column">Description</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-sponsor>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox
+                                [value]="sponsor"
+                            ></p-tableCheckbox>
+                        </td>
+                        <td class="name-column">
+                            <span class="p-column-title">Name</span>
+                            {{ sponsor.name }}
+                        </td>
+                        <td class="description-column">
+                            <span class="p-column-title">Description</span>
+                            {{ sponsor.description }}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Image</span>
+                            <img
+                                [src]="sponsor.image"
+                                alt="sponsor image"
+                                style="max-width: 100px; max-height: 100px"
+                            />
+                        </td>
+                        <td>
+                            <div class="flex justify-content-end">
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-pencil"
+                                    class="p-button-rounded p-button-success mr-2"
+                                    (click)="editsponsor(sponsor)"
+                                ></button>
+                                <button
+                                    pButton
+                                    pRipple
+                                    icon="pi pi-trash"
+                                    class="p-button-rounded p-button-warning"
+                                    (click)="deletesponsor(sponsor)"
+                                ></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog
+            [(visible)]="sponsorDialog"
+            [style]="{ width: '450px' }"
+            header="Sponsor Details"
+            [modal]="true"
+            class="p-fluid"
+        >
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="name">Name</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="name"
+                        [(ngModel)]="sponsor.name"
+                        required
+                        minlength="3"
+                        maxlength="20"
+                    />
+                    <small
+                        *ngIf="
+                            sponsor.name.length < 3 || sponsor.name.length > 20
+                        "
+                        class="p-error"
+                        >Name must be between 3 and 20 characters.</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="description">Description</label>
+                    <textarea
+                        id="description"
+                        pInputTextarea
+                        [(ngModel)]="sponsor.description"
+                        required
+                        rows="3"
+                        cols="20"
+                        minlength="10"
+                        maxlength="100"
+                    ></textarea>
+                    <small
+                        *ngIf="
+                            sponsor.description.length < 10 ||
+                            sponsor.description.length > 100
+                        "
+                        class="p-error"
+                        >Description must be between 10 and 100
+                        characters.</small
+                    >
+                </div>
+                <div class="field">
+                    <label for="image">Image</label>
+                    <input
+                        type="file"
+                        (change)="onFileChange($event)"
+                        accept="image/*"
+                        required
+                    /><br/>
+                    <small *ngIf="selectedFile == null" class="p-error"
+                        >Image should be added.</small
+                    >
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    label="Cancel"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    (click)="hideDialog()"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    label="Save"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    [disabled]="
+                        sponsor.name.length < 3 ||
+                        sponsor.name.length > 20 ||
+                        sponsor.description.length < 10 ||
+                        sponsor.description.length > 100 ||
+                        selectedFile == null
+                    "
+                    (click)="savesponsor()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog
+            [(visible)]="deleteSponsorDialog"
+            header="Confirm"
+            [modal]="true"
+            [style]="{ width: '450px' }"
+        >
+            <div class="flex align-items-center justify-content-center">
+                <i
+                    class="pi pi-exclamation-triangle mr-3"
+                    style="font-size: 2rem"
+                ></i>
+                <span *ngIf="sponsor">
+                    Are you sure you want to delete
+                    <b>{{ sponsor.name }}</b
+                    >?
+                </span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    label="No"
+                    (click)="deleteSponsorDialog = false"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    label="Yes"
+                    (click)="confirmDelete()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog
+            [(visible)]="deleteSponsorsDialog"
+            header="Confirm"
+            [modal]="true"
+            [style]="{ width: '450px' }"
+        >
+            <div class="flex align-items-center justify-content-center">
+                <i
+                    class="pi pi-exclamation-triangle mr-3"
+                    style="font-size: 2rem"
+                ></i>
+                <span>
+                    Are you sure you want to delete selected sponsors?
+                </span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    label="No"
+                    (click)="deleteSponsorsDialog = false"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    label="Yes"
+                    (click)="confirmDeleteSelected()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>
