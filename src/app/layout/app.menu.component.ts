@@ -20,7 +20,6 @@ export class AppMenuComponent implements OnInit {
 
         // Decode the token to extract user information
         const decodedToken = this.jwtHelper.decodeToken(token);
-        
         // Check if the user has the admin role
         const isAdmin = decodedToken && decodedToken.role === 'ADMIN';
 
@@ -70,6 +69,23 @@ export class AppMenuComponent implements OnInit {
                               icon: 'pi pi-fw pi-bookmark',
                               routerLink: ['/sponsor'],
                           },
+                        {
+                            label: 'Classroom',
+                            icon: 'pi pi-fw pi-bookmark',
+                            routerLink: ['/classroom'],
+                        },
+                        {
+                            label: 'Level',
+                            icon: 'pi pi-fw pi-bookmark',
+                            routerLink: ['/level'],
+                        },
+                        {
+                            label: 'Option',
+                            icon: 'pi pi-fw pi-bookmark',
+                            routerLink: ['/option'],
+                        },
+
+
                       ]
                     : [
                           {
@@ -87,14 +103,13 @@ export class AppMenuComponent implements OnInit {
         ];
     }
 
-   
                     // { label: 'Classroom', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/classroom'] },
                     // { label: 'Level', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/level'] },
                     // { label: 'Option', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/option'] },
                     // { label: 'Event', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/event'] },
                     // { label: 'Sponsor', icon: 'pi pi-fw pi-bookmark', routerLink: ['/pages/sponsor'] },
-                    
-                    
-                    
+
+
+
 
 }

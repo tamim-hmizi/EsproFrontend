@@ -83,6 +83,30 @@ const routes: Routes = [
                         '../app/demo/components/client/eventDetail/eventdetail.module'
                     ).then((m) => m.EventDetailModule),
             },
+            {
+                path: 'level',
+                loadChildren: () =>
+                    import(
+                        '../app/demo/components/pages/level/level.module'
+                        ).then((m) => m.LevelModule),
+            },
+            {
+                path: 'option',
+                loadChildren: () =>
+                    import(
+                        '../app/demo/components/pages/option/option.module'
+                        ).then((m) => m.OptionModule),
+            },
+            {
+                path: 'classroom',
+                loadChildren: () =>
+                    import(
+                        '../app/demo/components/pages/classroom/classroom.module'
+                        ).then((m) => m.ClassroomModule),
+            },
+
+
+
         ],
     },
     {
