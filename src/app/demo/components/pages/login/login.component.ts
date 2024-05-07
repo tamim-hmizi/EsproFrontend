@@ -37,7 +37,6 @@ export class LoginComponent implements OnInit {
         const decodedToken = helper.decodeToken(jwtToken);
         console.log(decodedToken['role']);
         localStorage.setItem('jwt', jwtToken);
-        
         if (decodedToken['role'] === 'ADMIN') {
           this.router.navigateByUrl('/skill');
         } else this.router.navigateByUrl('/dashboard');

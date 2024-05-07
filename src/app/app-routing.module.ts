@@ -112,11 +112,7 @@ const routes: Routes = [
             { path: 'publications/:rdiId', loadChildren: () => import('./demo/components/pages/publication/publication.module').then(m => m.PublicationModule) },
             { path: 'ResearchAxis/:rdiId', loadChildren: () => import('./demo/components/pages/ResearchAxis/ResearchAxis.module').then(m => m.ResearchAxisModule) },
             { path: 'dashbordRDI', loadChildren: () => import('./demo/components/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
-
-            { path: 'RDI', loadChildren: () => import('./demo/components/pages/rdi/rdi.module').then(m => m.RDIModule) },
             { path: 'Publication', loadChildren: () => import('./demo/components/pages/publication/publication.module').then(m => m.PublicationModule) },
-          
-
         ],
     },
     {
