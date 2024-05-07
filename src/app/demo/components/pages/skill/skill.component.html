@@ -42,7 +42,7 @@
                             <span class="p-column-title">Name</span>
                             {{skill.name}}
                         </td>
-                        <td style="width:14%; min-width:10rem;">
+                        <td style="max-width: 300px;">
                             <span class="p-column-title">Description</span>
                             {{skill.description}}
                         </td>
@@ -67,6 +67,7 @@
                 <div class="field">
                     <label for="description">Description</label>
                     <textarea id="description" pInputTextarea [(ngModel)]="skill.description" required rows="3" cols="20"></textarea>
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !skill.description">Description is required.</small>
                 </div>
             </ng-template>
 
@@ -99,4 +100,3 @@
         </p-dialog>
     </div>
 </div>
-

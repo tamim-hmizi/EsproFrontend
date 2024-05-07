@@ -1,10 +1,8 @@
-export interface user {
-    idu: number;
-    nameu: string;
-    surnameu: string;
-    password: string;
-    email: string;
-    telnum: number;
-    role: string;
-    img: string;
+export class User {
+  id!: number;
+  nom!: string;
+  prenom!: string;
+  email!: string;
+  role!: string;
+  password!: string;
 }

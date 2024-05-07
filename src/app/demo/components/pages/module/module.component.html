@@ -7,13 +7,14 @@
 
                 <ng-template pTemplate="right">
                     <div class="my-2">
-                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
-                            (click)="openNew()"></button>
-                            <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
-                            (click)="deleteSelectedModules()"
-                            [disabled]="!selectedModules || !selectedModules.length"></button>
-
+                        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedModules()" [disabled]="!selectedModules || !selectedModules.length"></button>
+                        <span class="ml-2 mr-2"></span> <!-- Spacer -->
+                        <input type="file" accept=".pdf" (change)="onFileSelected($event)" style="display: none;" id="fileInput">
+                        <button pButton pRipple label="Upload PDF" icon="pi pi-upload" class="p-button-info" (click)="showFileDialog()"></button>
                     </div>
+                    
+                    
                 </ng-template>
             </p-toolbar>
 
@@ -37,6 +38,7 @@
                         <th style="width: 3rem">
                             <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                         </th>
+                        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
                         <th pSortableColumn="teaching_hours">Teaching Hours <p-sortIcon
                                 field="teaching_hours"></p-sortIcon></th>
@@ -51,9 +53,14 @@
                             <p-tableCheckbox [value]="module"></p-tableCheckbox>
                         </td>
                         <td style="width:14%; min-width:10rem;">
-                            <span class="p-column-title">Description</span>
-                            {{module.description}}
+                            <span class="p-column-title">Name</span>
+                            {{module.name}}
                         </td>
+                        <td style="max-width: 300px;">
+                            <span class="p-column-title">Description</span>
+                            <div class="description-cell">{{module.description}}</div>
+                        </td>
+                        
                         <td style="width:14%; min-width:10rem;">
                             <span class="p-column-title">Teaching Hours</span>
                             {{module.teaching_hours}}
@@ -63,8 +70,12 @@
                             {{module.ects}}
                         </td>
                         <td>
-                            <div class="p-tag p-tag-rounded" *ngFor="let skill of module.skills">{{ skill.name }}</div>
+                            <div class="p-tag p-tag-rounded skill-tag" *ngFor="let skill of module.skills; let last = last">
+                                {{ skill.name }}
+                            </div>
                         </td>
+                        
+                        
                         <td>
                             <div class="flex justify-content-end"> <!-- Align buttons to the right -->
                                 <button pButton pRipple icon="pi pi-pencil"
@@ -79,71 +90,38 @@
             </p-table>
         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
         <p-dialog [(visible)]="moduleDialog" [style]="{width: '450px'}" header="Module Details" [modal]="true"
             class="p-fluid">
             <ng-template pTemplate="content">
                 <div class="field">
+                    <label for="name">Name</label>
+                    <input id="name" pInputText [(ngModel)]="module.name" type="text" required />
+                    <small class="ng-invalid ng-dirty" *ngIf="submitted && !module.name">Name is required.</small>
+                </div>
+                <div class="field">
                     <label for="description">Description</label>
-                    <textarea id="description" pInputTextarea [(ngModel)]="module.description" required rows="3"
-                        cols="20"></textarea>
+                    <textarea id="description" pInputTextarea [(ngModel)]="module.description" rows="3" cols="20" required></textarea>
+                    <small class="ng-invalid ng-dirty" *ngIf="submitted && !module.description">Description is required.</small>
                 </div>
                 <div class="field">
                     <label for="teaching_hours">Teaching Hours</label>
                     <input type="number" pInputText id="teaching_hours" [(ngModel)]="module.teaching_hours" required />
+                    <small class="ng-invalid ng-dirty" *ngIf="submitted && !module.teaching_hours">Teaching Hours is required.</small>
                 </div>
                 <div class="field">
                     <label for="ects">ECTS</label>
                     <input type="number" pInputText id="ects" [(ngModel)]="module.ects" required />
+                    <small class="ng-invalid ng-dirty" *ngIf="submitted && !module.ects">ECTS is required.</small>
                 </div>
                 <div class="field">
                     <label for="skills">Skills</label>
                     <div *ngFor="let skill of availableSkills" class="checkbox-container">
-                        <input type="checkbox" [id]="'skill_' + skill.id" [value]="skill" [checked]="isSelected(skill)"
+                        <input type="checkbox" [id]="'skill_' + skill.id" [value]="skill" [checked]="isSkillSelected(skill)"
                             (change)="toggleSelection(skill, $event.target.checked)">
                         <label [for]="'skill_' + skill.id">{{ skill.name }}</label>
                     </div>
                 </div>
+                
             </ng-template>
 
             <ng-template pTemplate="footer">
@@ -157,7 +135,7 @@
         <p-dialog [(visible)]="deleteModuleDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
             <div class="flex align-items-center justify-content-center">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-                <span *ngIf="module">Are you sure you want to delete <b>{{module.description}}</b>?</span>
+                <span *ngIf="module">Are you sure you want to delete <b>{{module.name}}</b>?</span>
             </div>
             <ng-template pTemplate="footer">
                 <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
@@ -180,5 +158,4 @@
             </ng-template>
         </p-dialog>
     </div>
-
 </div>

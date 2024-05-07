@@ -7,7 +7,7 @@ import { sponsor } from 'src/app/demo/api/sponsor';
 import { SponsorService } from 'src/app/demo/service/sponsor.service';
 import { MailService } from 'src/app/demo/service/mail.service';
 import { SmsService } from 'src/app/demo/service/sms.service';
-import { userService } from 'src/app/demo/service/user.service';
+import { UsersService as userService } from 'src/app/demo/service/users/users.service';
 import { format } from 'date-fns';
 import { CloudinaryService } from 'src/app/demo/service/cloudinary.service';
 @Component({
@@ -238,7 +238,7 @@ export class EventComponent implements OnInit {
 
                                             // Send email and SMS invitations to all users
                                             this.userService
-                                                .getAllusers()
+                                                .getUsers()
                                                 .subscribe({
                                                     next: (users) => {
                                                         users.forEach(

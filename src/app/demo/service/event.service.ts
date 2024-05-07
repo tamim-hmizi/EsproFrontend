@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { event } from '../api/event';
-import { user } from '../api/user';
-import { userService } from './user.service';
-import { mail } from '../api/mail';
+import { User as user } from '../api/user';
+import { UsersService as userService } from './users/users.service';
+import { mail  } from '../api/mail';
 @Injectable({
     providedIn: 'root',
 })

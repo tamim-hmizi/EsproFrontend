@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpEvent, HttpEventType, HttpRequest } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
 import { Module } from '../api/module'; 
 
 @Injectable({
@@ -31,4 +31,25 @@ export class ModuleService {
   updateModule(module: Module): Observable<Module> {
     return this.http.put<Module>(`${this.baseUrl}/update-module`, module);
   }
+
+  uploadPdf(file: File): Observable<string> {
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+
+    const req = new HttpRequest('POST', `${this.baseUrl}/upload`, formData, {
+      reportProgress: true,
+      responseType: 'text'
+    });
+
+    return this.http.request(req).pipe(
+      map((event: HttpEvent<any>) => {
+        if (event.type === HttpEventType.Response) {
+          return event.body as string;
+        } else {
+          return '';
+        }
+      })
+    );
+  }
+
 }
