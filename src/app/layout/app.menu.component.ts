@@ -84,8 +84,25 @@ export class AppMenuComponent implements OnInit {
                             icon: 'pi pi-fw pi-bookmark',
                             routerLink: ['/option'],
                         },
-
-
+                        {
+                
+                            label: 'RDI', icon: 'pi pi-fw pi-bookmark',
+                            items: [
+                                {
+                                    label: 'RDI', icon: 'pi pi-fw pi-bookmark',
+                                    items: [
+                                        { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/dashbordRDI'] },
+        
+                                        { label: 'RDIList', icon: 'pi pi-fw pi-home', routerLink: ['/RDI'] },
+                                       
+                                    ]
+                                },
+                                
+                                    { label: 'Publications', icon: 'pi pi-fw pi-home', routerLink: ['/Publication'] }
+        
+                               
+                            ]
+                        },
                       ]
                     : [
                           {
@@ -98,6 +115,8 @@ export class AppMenuComponent implements OnInit {
                               icon: 'pi pi-fw pi-bookmark',
                               routerLink: ['/eventclient'],
                           },
+                          { label: 'RDI', icon: 'pi pi-fw pi-bookmark', routerLink: ['/RDIS'] }
+
                       ],
             },
         ];

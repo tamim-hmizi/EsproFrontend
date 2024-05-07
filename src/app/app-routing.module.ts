@@ -104,9 +104,15 @@ const routes: Routes = [
                         '../app/demo/components/pages/classroom/classroom.module'
                         ).then((m) => m.ClassroomModule),
             },
-
-
-
+            { path: 'RDI', loadChildren: () => import('./demo/components/pages/rdi/rdi.module').then(m => m.RDIModule) },
+            { path: 'Publication', loadChildren: () => import('./demo/components/pages/publication/publication.module').then(m => m.PublicationModule) },
+            { path: 'RDIS', loadChildren: () => import('./demo/components/rdifrontoffice/rdifront/rdifront.module').then(m => m.RdiFrontModule) },
+            { path: 'RDIMember/:rdiId', loadChildren: () => import('./demo/components/pages/RDIMember/RDIMember.module').then(m => m.RDIMemberModule) },
+            { path: 'details/:rdiId', loadChildren: () => import('./demo/components/rdifrontoffice/DETAILS/details.module').then(m => m.DetailsModule) },
+            { path: 'publications/:rdiId', loadChildren: () => import('./demo/components/pages/publication/publication.module').then(m => m.PublicationModule) },
+            { path: 'ResearchAxis/:rdiId', loadChildren: () => import('./demo/components/pages/ResearchAxis/ResearchAxis.module').then(m => m.ResearchAxisModule) },
+            { path: 'dashbordRDI', loadChildren: () => import('./demo/components/pages/dashboard/dashboard.module').then(m => m.DashboardModule) },
+            { path: 'Publication', loadChildren: () => import('./demo/components/pages/publication/publication.module').then(m => m.PublicationModule) },
         ],
     },
     {

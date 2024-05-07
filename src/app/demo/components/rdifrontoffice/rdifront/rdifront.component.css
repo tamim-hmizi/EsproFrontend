@@ -1,0 +1,120 @@
+
+/* CSS for smaller card dimensions */
+.card-small {
+    max-width:400px; /* Maximum width of the card */
+    min-height: 400px; /* Minimum height of the card */
+    margin: auto; /* Center the card horizontally */
+    padding: 1rem; /* Padding within the card */
+    border-radius: 10px; /* Rounded corners */
+    border: 1px solid var(--surface-d); /* Border style */
+    background-color: var(--surface); /* Card background color */
+  }
+  
+  .rdi-card { 
+    background-color: white; 
+    border: 1px solid #ccc; 
+    padding: 10px; 
+    transition: background-color 0.3s ease; /* Effet de transition pour douceur */ 
+  }
+  
+  .rdi-card:hover { 
+    background-color: #f0f4f7; /* Couleur lors du survol */ 
+  }
+  /* Flexbox for centering elements */
+  .card-center {
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center elements horizontally */
+    align-items: center; /* Center elements vertically */
+  }
+  /* Styling for the card */
+
+  /* Styling for the RDI position in the top-left corner */
+  .rdi-position {
+    position: absolute; /* Absolute positioning to fix in place */
+    top: 10px; /* Distance from the top */
+    left: 10px; /* Distance from the left */
+    background: var(--primary-color); /* Background color for contrast */
+    color: white; /* White text for visibility */
+    padding: 5px 10px; /* Padding for the label */
+    border-radius: 5px; /* Rounded corners for the label */
+    font-weight: bold; /* Bold text */
+  }
+  
+  /* Styling for the title to make it larger and centered */
+ 
+/* Animation pour le premier chercheur */
+.winning-animation {
+  animation: winning 2s infinite;
+}
+
+@keyframes winning {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+:host ::ng-deep .bg-pastel-red  .p-rating-icon  {
+  color: #920808; 
+  fill: #920808;
+}
+
+:host ::ng-deep .bg-pastel-green  .p-rating-icon  {
+  color: #06ad0e;
+  fill: #06ad0e; 
+}
+
+:host ::ng-deep .bg-pastel-light  .p-rating-icon  {
+  color: #8a4949;
+  fill: #8a4949;
+}
+/* Styling for the card */
+.cardnew {
+  border: 1px solid var(--surface-d); /* Border */
+  border-radius: 10px; /* Rounded corners */
+  background-color: var(--surface); /* Background color */
+  padding: 1rem; /* Padding */
+  position: relative; /* Allow absolute positioning of child elements */
+}
+
+/* Styling for the RDI position in the top-left corner */
+.rdi-position {
+  position: absolute; /* Absolute positioning to fix in place */
+  top: 10px; /* Distance from the top */
+  left: 10px; /* Distance from the left */
+  background: var(--primary-color); /* Background color for contrast */
+  color: white; /* White text for visibility */
+  padding: 5px 10px; /* Padding for the label */
+  border-radius: 5px; /* Rounded corners for the label */
+  font-weight: bold; /* Bold text */
+}
+
+/* Styling for the title to make it larger and centered */
+.theme-title {
+  font-size: 1.5rem; /* Larger font size for emphasis */
+  text-align: center; /* Center-align text */
+  margin-bottom: 0.5rem; /* Space below the title */
+}
+
+/* Styling for the description */
+.description {
+  font-size: 1rem; /* Normal font size */
+  text-align: center; /* Center-align text */
+  color: var(--text-secondary); /* Subtle color for the description */
+  margin-bottom: 1rem; /* Space below the description */
+}
+
+/* Centering text */
+.text-center {
+  text-align: center; /* Center-align text */
+}
+
+/* Reduced spacing for compactness */
+.my-5 {
+  margin-top: 1rem; /* Adjusted top margin */
+  margin-bottom: 1rem; /* Adjusted bottom margin */
+}
