@@ -17,6 +17,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
+import { ChartModule } from 'primeng/chart';
+
 
 @NgModule({
     imports: [
@@ -35,7 +37,8 @@ import { MessageService } from 'primeng/api';
         DropdownModule,
         RadioButtonModule,
         InputNumberModule,
-        DialogModule
+        DialogModule,
+        ChartModule
     ],
     providers: [MessageService],
     declarations: [DonationComponent]

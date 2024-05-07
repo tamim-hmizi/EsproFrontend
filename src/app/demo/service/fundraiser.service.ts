@@ -20,10 +20,11 @@ export class FundraiserService {
     return this.http.get<Fundraiser>(`${this.baseUrl}/retrieve-fundraiser/${fundraiserId}`);
   }
 
-  addFundraiser(name: string, description: string, photoFile?: File): Observable<Fundraiser> {
+  addFundraiser(name: string, description: string, moneytocollect: number, photoFile?: File): Observable<Fundraiser> {
     const formData: FormData = new FormData();
     formData.append('name', name);
     formData.append('description', description);
+    formData.append('moneytocollect', moneytocollect.toString());
     if (photoFile) {
       formData.append('photoFile', photoFile); // Correctly append the photo file
     }
@@ -37,10 +38,12 @@ export class FundraiserService {
     return this.http.delete<void>(`${this.baseUrl}/remove-fundraiser/${fundraiserId}`);
   }
 
-  updateFundraiser(id: number, name: string, description: string, photoFile?: File): Observable<Fundraiser> {
+  updateFundraiser(id: number, name: string, description: string,moneytocollect: number, photoFile?: File): Observable<Fundraiser> {
     const formData: FormData = new FormData();
     formData.append('name', name);
     formData.append('description', description);
+    formData.append('moneytocollect', moneytocollect.toString());
+    
     if (photoFile) {
       formData.append('photoFile', photoFile);
     }
@@ -50,6 +53,7 @@ export class FundraiserService {
   }
   
   
-  
-
+  getTotalDonations(fundraiserId: number): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/${fundraiserId}/totalDonation`);
+  }
 }

@@ -1,0 +1,14 @@
+/* src/styles/prime-ng-overrides.css */
+
+/* Set maximum width and text overflow for name and description columns */
+.name-column {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+ .description-column {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

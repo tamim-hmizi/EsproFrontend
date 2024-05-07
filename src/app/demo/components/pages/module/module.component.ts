@@ -63,7 +63,7 @@ export class ModuleComponent implements OnInit {
     isSkillSelected(skill: Skill): boolean {
         return this.module.skills.some(selectedSkill => selectedSkill.id === skill.id);
     }
-
+    
 
     openNew() {
         this.module = {
@@ -87,7 +87,7 @@ export class ModuleComponent implements OnInit {
         this.selectedSkills = [...module.skills]; // Initialize selectedSkills with the skills associated with the module
         this.moduleDialog = true;
     }
-
+    
 
     deleteModule(module: Module) {
         this.module = { ...module };
@@ -130,58 +130,62 @@ export class ModuleComponent implements OnInit {
         this.submitted = false;
     }
 
-
+    
     saveModule() {
         // Check if description field is filled
         if (!this.module.description) {
             this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please fill in the description field', life: 3000 });
             return; // Exit the method early if validation fails
         }
-
+    
         // Check if teaching_hours and ects are greater than 0
         if (this.module.teaching_hours <= 0 || this.module.ects <= 0) {
             this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Teaching hours and ECTS must be greater than 0', life: 3000 });
             return; // Exit the method early if validation fails
         }
-
+    
         // Check if at least one skill is selected
         if (this.selectedSkills.length === 0) {
             this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Please select at least one skill', life: 3000 });
             return; // Exit the method early if validation fails
         }
-
+    
         this.submitted = true;
-
+    
         this.module.skills = [...this.selectedSkills]; // Update module object with selected skills
-
-    if (this.module.id === 0) {
-        this.moduleService.addModule(this.module).subscribe(newModule => {
-            this.modules.push(newModule);
-            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Module Added', life: 3000 });
-        });
-        // Add module logic...
-    } else {
-        console.log('Updated Module Object:', this.module); // Log the module object before API call
-        this.moduleService.updateModule(this.module).subscribe(updatedModule => {
-            const index = this.modules.findIndex(m => m.id === updatedModule.id);
-            if (index !== -1) {
-                this.modules[index] = updatedModule;
-            }
-            this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Module Updated', life: 3000 });
-        });
+    
+        if (this.module.id === 0) {
+            // If the module id is 0, it means it's a new module, so call addModule
+            console.log('New Module Object:', this.module); // Log the module object before API call
+            this.moduleService.addModule(this.module).subscribe(addedModule => {
+                this.modules.push(addedModule); // Add the newly added module to the list
+                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Module Added', life: 3000 });
+            });
+        } else {
+            // If the module id is not 0, it means it's an existing module, so call updateModule
+            console.log('Updated Module Object:', this.module); // Log the module object before API call
+            this.moduleService.updateModule(this.module).subscribe(updatedModule => {
+                const index = this.modules.findIndex(m => m.id === updatedModule.id);
+                if (index !== -1) {
+                    this.modules[index] = updatedModule;
+                }
+                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Module Updated', life: 3000 });
+            });
+        }
+    
+        this.moduleDialog = false;
+        this.module = {
+            id: 0,
+            name: '',
+            description: '',
+            teaching_hours: 0,
+            ects: 0,
+            skills: []
+        };
     }
-    this.moduleDialog = false;
-    this.module = {
-        id: 0,
-        name: '',
-        description: '',
-        teaching_hours: 0,
-        ects: 0,
-        skills: []
-    };
-}
-
-
+    
+    
+    
 
 
     onGlobalFilter(table: Table, event: Event) {
@@ -206,12 +210,12 @@ export class ModuleComponent implements OnInit {
             this.selectedSkills = this.selectedSkills.filter(selectedSkill => selectedSkill.id !== skill.id);
         }
     }
-
+    
 
     showFileDialog() {
         document.getElementById('fileInput').click();
     }
-
+    
     onFileSelected(event: Event) {
         const fileInput = event.target as HTMLInputElement;
         const file = fileInput.files[0];
@@ -230,9 +234,9 @@ export class ModuleComponent implements OnInit {
             }
         );
     }
+    
+    
+    
 
-
-
-
-
+    
 }
