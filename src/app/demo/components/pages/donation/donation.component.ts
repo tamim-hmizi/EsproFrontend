@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MessageService } from 'primeng/api';
 import { Donation } from 'src/app/demo/api/donation';
 import { DonationService } from 'src/app/demo/service/donation.service';
+import { FundraiserService } from 'src/app/demo/service/fundraiser.service';
 
 @Component({
   selector: 'app-donation',
@@ -12,39 +11,21 @@ import { DonationService } from 'src/app/demo/service/donation.service';
 export class DonationComponent implements OnInit {
 
   donations: Donation[];
-  displayDialog: boolean;
-  cols: any[]; // Define cols array
+  data: any;
+  options: any;
+  fundraiserNames: string[] = []; // Array to store fundraiser names
 
-  donationForm: FormGroup; // Define form group for donation form
-  submitted: boolean = false;
-
-  constructor(private donationService: DonationService, private messageService: MessageService, private fb: FormBuilder) {
-    this.donations = [];
-    this.displayDialog = false;
-    // Initialize cols array
-    this.cols = [
-      { field: 'type', header: 'Type' },
-      { field: 'amount', header: 'Amount' },
-      { field: 'status', header: 'Status' },
-      { field: 'user', header: 'User' }
-    ];
-  }
+  constructor(private donationService: DonationService, private fundraiserService: FundraiserService) { }
 
   ngOnInit() {
     this.loadDonations();
-    // Initialize donation form
-    this.donationForm = this.fb.group({
-      type: ['', Validators.required],
-      amount: ['', Validators.required],
-      status: ['', Validators.required],
-      // Add more form controls as needed
-    });
   }
 
   loadDonations() {
     this.donationService.getAllDonations().subscribe(
       (donations: Donation[]) => {
         this.donations = donations;
+        this.loadFundraiserNames();
       },
       (error) => {
         console.error('Error loading donations:', error);
@@ -52,21 +33,74 @@ export class DonationComponent implements OnInit {
     );
   }
 
-  showDialog() {
-    this.displayDialog = true;
+  loadFundraiserNames() {
+    this.fundraiserService.getAllFundraisers().subscribe(
+      (fundraisers: any[]) => {
+        this.fundraiserNames = fundraisers.map(f => f.name);
+        this.prepareChartData();
+      },
+      (error) => {
+        console.error('Error loading fundraiser names:', error);
+      }
+    );
   }
 
-  hideDialog() {
-    this.displayDialog = false;
-    this.submitted = false; // Reset submitted flag
-    this.donationForm.reset(); // Reset form
+  prepareChartData() {
+    // Get unique payment methods
+    const paymentMethods = [...new Set(this.donations.map(d => d.type))];
+
+    // Initialize data for the chart
+    this.data = {
+      labels: this.fundraiserNames,
+      datasets: paymentMethods.map((method, index) => ({
+        label: method,
+        backgroundColor: this.getBackgroundColor(index),
+        data: this.getDonationAmountsByFundraiserAndMethod(method)
+      }))
+    };
+
+    this.options = {
+      maintainAspectRatio: false,
+      scales: {
+        x: { stacked: true },
+        y: {
+          stacked: true,
+          ticks: {
+            maxTicksLimit: 10 // Display a maximum of 10 ticks on the y-axis
+          }
+        }
+      },
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              if (context.parsed.y !== null) {
+                label += '$' + context.parsed.y.toFixed(2); // Adding '$' before the value
+              }
+              return label;
+            }
+          }
+        }
+      }
+    };
   }
 
-  onSubmit() {
-    this.submitted = true;
-    if (this.donationForm.invalid) {
-      return;
-    }
-    // Add code to submit the donation form and handle the response
+  // Function to get donation amounts by fundraiser and payment method
+  getDonationAmountsByFundraiserAndMethod(paymentMethod: string): number[] {
+    return this.fundraiserNames.map(fundraiser =>
+      this.donations
+        .filter(d => d.fundraiserName === fundraiser && d.type === paymentMethod)
+        .reduce((sum, donation) => sum + donation.amount, 0)
+    );
+  }
+
+  // Function to get background colors
+  getBackgroundColor(index: number): string {
+    const colors = ['#36A2EB', '#FFCE56', '#FF6384']; // Blue, Yellow, Red
+    return colors[index % colors.length]; // Cycle through colors
   }
 }

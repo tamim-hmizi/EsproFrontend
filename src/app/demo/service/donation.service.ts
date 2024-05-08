@@ -20,7 +20,13 @@ export class DonationService {
     return this.http.get<Donation>(`${this.baseUrl}/retrieve-donation/${DonationId}`);
   }
 
-  addDonation(donation: Donation): Observable<Donation> { 
-    return this.http.post<Donation>(`${this.baseUrl}/add-donation`, donation);
-  }
+
+  addDonation(donation: Donation): Observable<Donation> {
+    const fundraiserId = donation.fundraiserId;
+    return this.http.post<Donation>(`${this.baseUrl}/add-donation/${fundraiserId}`, donation);
+}
+
+  
+
+
 }

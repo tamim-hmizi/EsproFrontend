@@ -7,6 +7,11 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { Donation } from 'src/app/demo/api/donation';
 import { DonationService } from '../../../service/donation.service';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { FundraiserService } from 'src/app/demo/service/fundraiser.service';
+import { JwtHelperService } from '@auth0/angular-jwt';
+
+
 
 declare var window: any;
 
@@ -15,6 +20,7 @@ declare var window: any;
   templateUrl: './donate.component.html',
   styleUrls: ['./donate.component.css'],
 })
+
 export class DonateComponent implements OnInit {
   donationForm: FormGroup;
   stripePromise: Promise<Stripe | null>;
@@ -23,8 +29,10 @@ export class DonateComponent implements OnInit {
   connectedAddress: string = '';
   fundraisers: Fundraiser[] = [];
   selectedFundraiser: Fundraiser | null = null;
+  totalDonations: { [fundraiserId: number]: number } = {}; 
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient,private donationService: DonationService) {
+
+  constructor(private formBuilder: FormBuilder, private http: HttpClient,private donationService: DonationService,private fundraiserService: FundraiserService) {
     this.donationForm = this.formBuilder.group({
       amount: ['', [Validators.required, Validators.min(5), Validators.pattern(/^\d+(\.\d{1,2})?$/)]],
       paymentMethod: ['card', Validators.required]
@@ -34,6 +42,7 @@ export class DonateComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchFundraisers();
+    // this.getUserIdFromToken();
     if (this.donationForm) {
       const amountControl = this.donationForm.get('amount');
       if (amountControl) {
@@ -42,7 +51,20 @@ export class DonateComponent implements OnInit {
         });
       }
     }
+
+   
   }
+
+  // getUserIdFromToken(): void {
+  //   const token = localStorage.getItem('jwt');
+  //   console.log("token",token);
+  //   if (token) {
+  //     const jwtHelper = new JwtHelperService();
+  //     const decodedToken = jwtHelper.decodeToken(token);
+  //     console.log("7nich",decodedToken);
+  //    // this.userId = decodedToken.sub;
+  //   }
+  // }
 
   fetchFundraisers(): void {
     this.http.get<Fundraiser[]>('http://localhost:8089/esprobackend/fundraiser/retrieve-all-fundraisers')
@@ -53,6 +75,10 @@ export class DonateComponent implements OnInit {
             const imageUrl = 'data:image/png;base64,' + fundraiser.displayPicture;
             return { ...fundraiser, displayPicture: imageUrl };
           });
+          // Fetch total donations for each fundraiser
+          this.fundraisers.forEach(fundraiser => {
+            this.getDonationTotal(fundraiser.id);
+          });
         },
         (error) => {
           console.error('Error fetching fundraisers:', error);
@@ -60,40 +86,84 @@ export class DonateComponent implements OnInit {
       );
   }
 
+  getDonationTotal(fundraiserId: number): void {
+    this.fundraiserService.getTotalDonations(fundraiserId)
+      .subscribe((total: number) => {
+        this.totalDonations[fundraiserId] = total;
+        console.log(total);
+      }, (error) => {
+        console.error('Error fetching total donation:', error);
+      });
+  }
+
+  calculateDonationPercentage(fundraiser: Fundraiser): number {
+    const totalDonation = this.totalDonations[fundraiser.id] || 0;
+    if (!fundraiser.moneytocollect || totalDonation === 0) {
+        return 0;
+    }
+    const percentage = (totalDonation / fundraiser.moneytocollect) * 100;
+    return parseFloat(percentage.toFixed(2));
+}
+
 
   selectFundraiser(fundraiser: Fundraiser): void {
     this.selectedFundraiser = fundraiser;
   }
 
-  async submitDonation() {
+  async submitDonation(fundraiserId: number) {
     if (this.donationForm.invalid || !this.selectedFundraiser) {
-      return;
+        return;
     }
-
+    console.log(fundraiserId);
     const amount = this.donationForm.value.amount;
     const paymentMethod = this.donationForm.value.paymentMethod;
 
-    console.log('Donation amount:', amount);
-    console.log('Selected payment method:', paymentMethod);
+    try {
+        if (paymentMethod === 'Credit/Debit Card') {
+            await this.redirectToStripeCheckout();
+        } else if (paymentMethod === 'Paypal') {
+            this.initiatePaypalCheckout(amount);
+        } else if (paymentMethod === 'Crypto') {
+            initiateCryptodonate(amount, "0xF75bD3adC93F29D5f4235F1a60B19628575B1b16");
+        } else {
+            console.error('Invalid payment method:', paymentMethod);
+            return;
+        }
 
-    if (paymentMethod === 'card') {
-      await this.redirectToStripeCheckout();
-    } else if (paymentMethod === 'paypal') {
-      this.initiatePaypalCheckout(amount);
-    } else if (paymentMethod === 'crypto') {
-      initiateCryptodonate(amount, "0xF75bD3adC93F29D5f4235F1a60B19628575B1b16");
-    } else {
-      console.error('Invalid payment method:', paymentMethod);
+        const donation: Donation = {
+            type: paymentMethod,
+            amount: amount,
+            status: 'Complete',
+            fundraiserId: fundraiserId // Make sure fundraiserId is passed correctly
+
+        };
+
+        this.donationService.addDonation(donation)
+            .subscribe(
+                (response) => {
+                    console.log('Donation added successfully:', response);
+                },
+                (error) => {
+                    console.error('Error adding donation:', error);
+                }
+            );
+    } catch (error) {
+        console.error('Error processing payment:', error);
     }
-  }
+}
+
+
+  
+
+
 
   async redirectToStripeCheckout() {
     const amount = this.donationForm.value.amount;
-  
+
     this.http.post<any>('http://localhost:8089/esprobackend/donation/api/create-checkout-session', { amount }).subscribe(response => {
       const sessionId = response.sessionId;
       const donationId = response.donationId;
-  
+
       this.stripePromise.then(stripe => {
         if (stripe) {
           stripe.redirectToCheckout({
@@ -102,15 +172,7 @@ export class DonateComponent implements OnInit {
             if (result.error) {
               console.error(result.error);
             } else {
-              const donation: Donation = { id: donationId, type: 'Crédit Card', amount: amount, status: 'complete', user: null }; 
-              this.donationService.addDonation(donation).subscribe(
-                addedDonation => {
-                  console.log('Donation added:', addedDonation);
-                },
-                error => {
-                  console.error('Error adding donation:', error);
-                }
-              );
+              // Handle successful payment
             }
           });
         } else {
@@ -192,4 +254,6 @@ async function initiateCryptodonate(amountInUSD: number, recipientAddress: strin
         console.error('Error donating crypto:', error);
         // Handle error and update UI
     }
+
+    
 }

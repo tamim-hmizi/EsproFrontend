@@ -5,7 +5,7 @@ import { Module } from 'src/app/demo/api/module';
 import { Classroom } from 'src/app/demo/api/classroom';
 import { User } from 'src/app/demo/api/user';
 import { ClassroomService } from 'src/app/demo/service/classroom.service';
-import { UserService } from 'src/app/demo/service/user.service';
+import { UsersService } from 'src/app/demo/service/users/users.service';
 import { AffectationService } from 'src/app/demo/service/affectation.service';
 import { CalendarService } from 'src/app/demo/service/calendar.service';
 import { ModuleService } from 'src/app/demo/service/module.service';
@@ -59,7 +59,7 @@ export class AffectationComponent implements OnInit {
     private messageService: MessageService,
     private changeDetector: ChangeDetectorRef,
     private classroomService: ClassroomService,
-    private userService: UserService
+    private userService: UsersService
   ) {}
 
   ngOnInit() {
@@ -67,7 +67,7 @@ export class AffectationComponent implements OnInit {
     this.fetchAvailableCalendars(); // Fetch all available calendars
     this.fetchAvailableModules(); // Fetch all available modules
     this.fetchAvailableClassrooms(); // Fetch all available classrooms
-    this.fetchAvailableUsers(); // Fetch all available users
+    // this.fetchAvailableUsers(); // Fetch all available users
   }
 
   fetchAffectations() {
@@ -135,21 +135,21 @@ export class AffectationComponent implements OnInit {
     );
   }
 
-  fetchAvailableUsers() {
-    this.userService.getAllUsers().subscribe(
-      (data) => {
-        this.availableUsers = data;
-      },
-      (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to fetch users',
-          life: 3000,
-        });
-      }
-    );
-  }
+  // fetchAvailableUsers() {
+  //   this.userService.getUsers().subscribe(
+  //     (data) => {
+  //       this.availableUsers = data;
+  //     },
+  //     (error) => {
+  //       this.messageService.add({
+  //         severity: 'error',
+  //         summary: 'Error',
+  //         detail: 'Failed to fetch users',
+  //         life: 3000,
+  //       });
+  //     }
+  //   );
+  // }
 
   onCalendarChange(event: any) {
     this.affectation.calendar = event.value; // Update calendar selection
@@ -322,8 +322,6 @@ export class AffectationComponent implements OnInit {
       'Teaching Hours',
       'ECTS',
       'Skills',
-      'User ID',
-      'User First Name',
       'Classroom ID',
       'Classroom Name'
     ];
@@ -352,8 +350,6 @@ export class AffectationComponent implements OnInit {
         affectation.module?.teaching_hours || '',
         affectation.module?.ects || '',
         skillNames,
-        affectation.user?.id || '',
-        affectation.user?.firstname || '',
         affectation.classroom?.id || '',
         affectation.classroom?.name || '',
       ].join(','); // Join each row into a single comma-separated string
@@ -382,8 +378,7 @@ export class AffectationComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         const content = e.target.result as string;
-        const records = this.importFromCSV(content);
-        this.importAffectations(records); // Import the parsed records
+
       };
 
       reader.readAsText(file); // Read CSV content
@@ -397,81 +392,6 @@ export class AffectationComponent implements OnInit {
     }
   }
 
-  importFromCSV(content: string) {
-    const rows = content.split('\n');
-    const headers = rows[0].split(',');
-
-    const expectedHeaders = [
-      'Affectation ID',
-      'Semester',
-      'Calendar ID',
-      'Academic Year',
-      'Start Date',
-      'End Date',
-      'Archive',
-      'Module ID',
-      'Module Name',
-      'Skills',
-      'User ID',
-      'User First Name',
-      'Classroom ID',
-      'Classroom Name'
-    ];
-
-    if (!expectedHeaders.every(header => headers.includes(header))) {
-      throw new Error("Invalid CSV format: incorrect headers or missing required fields");
-    }
-
-    const records = rows.slice(1).map((row) => {
-      const fields = row.split(',');
-
-      if (fields.length !== expectedHeaders.length) {
-        throw new Error("CSV row format mismatch");
-      }
-
-      const affectation: Affectation = {
-        id: parseInt(fields[0], 10),
-        semester: parseInt(fields[1], 10),
-        calendar: {
-          id: parseInt(fields[2], 10),
-          academic_year: fields[3],
-          start_date: fields[4] ? new Date(fields[4]) : null,
-          end_date: fields[5] ? new Date(fields[5]) : null,
-          archive: fields[6] || '',
-        },
-        module: {
-          id: parseInt(fields[7], 10),
-          name: fields[8],
-          description: '',
-          teaching_hours: 0,
-          ects: 0,
-          skills: fields[9] ? fields[9].split(';').map((skill) => ({
-            id: 0,
-            name: skill.trim(),
-            description: '',
-          })) : [],
-        },
-        user: {
-            id: parseInt(fields[10], 10),
-            firstname: fields[11],
-            lastname: fields[12],
-            email: '', // Default or extracted from CSV
-            password: '', // Not usually included in CSV but placeholder if required
-            telephone_number: 0, // Default or extracted from CSV
-            role: '', // Default or extracted from CSV
-          },
-          
-        classroom: {
-          id: parseInt(fields[13], 10),
-          name: fields[14],
-        },
-      };
-
-      return affectation;
-    });
-
-    return records;
-  }
 
   importAffectations(records: Affectation[]) {
     if (records.length === 0) {

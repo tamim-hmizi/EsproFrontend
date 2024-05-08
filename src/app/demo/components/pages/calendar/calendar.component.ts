@@ -1,4 +1,3 @@
-import { AccessRoutingModule } from './../../auth/access/access-routing.module';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Calendar } from 'src/app/demo/api/calendar';
 import { MessageService } from 'primeng/api';
@@ -183,13 +182,22 @@ export class CalendarComponent implements OnInit {
     savecalendar() {
         this.submitted = true;
         if (this.calendar.id === 0) {
-            this.CalendarService.addCalendar(this.calendar).subscribe(
-                (newcalendar) => {
-                    this.calendars.push(newcalendar);
+            this.CalendarService.addCalendars([this.calendar]).subscribe(
+                (addedCalendars) => {
+                    this.calendars.push(...addedCalendars);
                     this.messageService.add({
                         severity: 'success',
                         summary: 'Successful',
-                        detail: 'calendar Added',
+                        detail: 'Calendars Added',
+                        life: 3000,
+                    });
+                },
+                (error) => {
+                    console.error('Error adding calendars:', error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Failed to add calendars',
                         life: 3000,
                     });
                 }
@@ -209,6 +217,15 @@ export class CalendarComponent implements OnInit {
                         detail: 'calendar Updated',
                         life: 3000,
                     });
+                },
+                (error) => {
+                    console.error('Error updating calendar:', error);
+                    this.messageService.add({
+                        severity: 'error',
+                        summary: 'Error',
+                        detail: 'Failed to update calendar',
+                        life: 3000,
+                    });
                 }
             );
         }
@@ -221,6 +238,7 @@ export class CalendarComponent implements OnInit {
             end_date: new Date(),
         };
     }
+    
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal(

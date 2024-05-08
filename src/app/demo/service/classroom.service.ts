@@ -12,26 +12,36 @@ export class ClassroomService {
     constructor(private http: HttpClient) {}
 
     getAllClassrooms(): Observable<Classroom[]> {
-        let val = this.http.get<Classroom[]>(`${this.baseUrl}/retrieve-all-classrooms`);
-        return val;
+        return this.http.get<Classroom[]>(
+            `${this.baseUrl}/retrieve-all-classrooms`,
+        );
     }
 
-    getClassroomById(ClassroomId: number): Observable<Classroom> {
-        return this.http.get<Classroom>(`${this.baseUrl}/retrieve-classroom/${ClassroomId}`);
+    getClassroomById(classroomId: number): Observable<Classroom> {
+        return this.http.get<Classroom>(
+            `${this.baseUrl}/retrieve-classroom/${classroomId}`,
+        );
     }
 
-    addClassroom(Classroom: Classroom): Observable<Classroom> {
-        return this.http.post<Classroom>(`${this.baseUrl}/add-classroom`, Classroom);
+    //giveme the other methods
+    addClassroom(classroom: Classroom): Observable<Classroom> {
+        return this.http.post<Classroom>(
+            `${this.baseUrl}/add-classroom`,
+            classroom,
+        );
     }
 
-    removeClassroom(ClassroomId: number): Observable<void> {
-        return this.http.delete<void>(`${this.baseUrl}/remove-classroom/${ClassroomId}`);
+    //hello?
+    removeClassroom(classroomId: number): Observable<void> {
+        return this.http.delete<void>(
+            `${this.baseUrl}/remove-classroom/${classroomId}`,
+        );
     }
 
-    updateClassroom(ClassroomId: number, Classroom: Classroom): Observable<Classroom> {
+    updateClassroom(classroom: Classroom): Observable<Classroom> {
         return this.http.put<Classroom>(
-            `${this.baseUrl}/modify-classroom/${ClassroomId}`,
-            Classroom
+            `${this.baseUrl}/modify-classroom`,
+            classroom,
         );
     }
 }

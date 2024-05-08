@@ -1,0 +1,21 @@
+.container-xxl {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .authentication-wrapper {
+    width: 400px; /* Adjust the width as needed */
+  }
+  
+  .app-brand img {
+    width: 100px; /* Adjust the width of the logo */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
+  .form-label {
+    display: block; /* Ensures labels are displayed on a new line */
+    margin-bottom: 0.5rem; /* Adds some spacing between label and input */
+  }
+  

@@ -38,6 +38,7 @@
                         </th>
                         <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
                         <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                        <th pSortableColumn="description">Objectif <p-sortIcon field="description"></p-sortIcon></th>
                         <th pSortableColumn="description">Image <p-sortIcon field="photo"></p-sortIcon></th>
                         <th></th>
                     </tr>
@@ -55,7 +56,10 @@
                             <span class="p-column-title">Description</span>
                             {{fundraiser.description}}
                         </td>
-
+                        <td style="max-width: 300px;">
+                            <span class="p-column-title">Objectif</span>
+                            {{fundraiser.moneytocollect}} $
+                        </td>
                         <td>
                             <div *ngIf="fundraiser.displayPicture">
                                 <img class="card-img-top rounded-circle"
@@ -97,12 +101,21 @@
                     <small class="ng-dirty ng-invalid" *ngIf="submitted && !fundraiser.description">Description is
                         required.</small>
                 </div>
+                <div class="field">
+                    <label for="description">Objectif $</label>
+                    <input type="number" id="description" pInputTextarea [(ngModel)]="fundraiser.moneytocollect" required rows="3"
+                        cols="20"> 
+                    <small class="ng-dirty ng-invalid" *ngIf="submitted && !fundraiser.moneytocollect">Objectif is
+                        required.</small>
+                </div>
                 <div class="p-field">
                     <label for="photo" class="p-d-block">Photo</label>
                     <div class="photo-container">
                         <input type="file" id="photo" (change)="onFileChange($event)" class="p-inputtext">
                         <img class="card-img-top rounded-circle p-m-1"
-                            style="width: 40%; height: 40%; object-fit: cover;" [src]="fundraiser.displayPicture"
+                        *ngIf="fundraiser.displayPicture  "
+                            style="width: 40%; height: 40%; object-fit: cover;" 
+                            [src]="fundraiser.displayPicture"
                             alt="Fundraiser Photo" />
                     </div>
                 </div>

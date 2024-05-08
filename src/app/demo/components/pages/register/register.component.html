@@ -1,0 +1,61 @@
+<div class="container-xxl">
+  <div class="authentication-wrapper authentication-basic container-p-y">
+    <div class="authentication-inner">
+      <!-- Register Card -->
+      <div class="card">
+        <div class="card-body">
+          <!-- Logo -->
+          <div class="app-brand justify-content-center">
+            <a href="index.html" class="app-brand-link gap-2">
+              <img src="assets/layout/images/esprit.png" alt="logo">
+            </a>
+          </div>
+          <!-- /Logo -->
+          <h4 class="mb-2">Adventure starts here 🚀</h4>
+          <p class="mb-4">Make your app management easy and fun!</p>
+
+          <form [formGroup]="registerForm" (ngSubmit)="submitForm()" class="mb-3">
+            <div class="mb-3">
+              <label class="form-label" for="nom">Nom</label>
+              <input type="text" id="nom" class="form-control" formControlName="nom">
+              <div class="alert alert-danger" *ngIf="registerForm.get('nom').invalid && (registerForm.get('nom').touched || registerForm.get('nom').dirty)">
+                <div *ngIf="registerForm.get('nom').errors?.required">Nom is required</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="prenom">Prénom</label>
+              <input type="text" id="prenom" class="form-control" formControlName="prenom">
+              <div class="alert alert-danger" *ngIf="registerForm.get('prenom').invalid && (registerForm.get('prenom').touched || registerForm.get('prenom').dirty)">
+                <div *ngIf="registerForm.get('prenom').errors?.required">Prénom is required</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="email">Email</label>
+              <input type="email" id="email" class="form-control" formControlName="email">
+              <div class="alert alert-danger" *ngIf="registerForm.get('email').invalid && (registerForm.get('email').touched || registerForm.get('email').dirty)">
+                <div *ngIf="registerForm.get('email').errors?.required">Email is required</div>
+                <div *ngIf="registerForm.get('email').errors?.email">Invalid email format</div>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="password">Password</label>
+              <input type="password" id="password" class="form-control" formControlName="password">
+              <div class="alert alert-danger" *ngIf="registerForm.get('password').invalid && (registerForm.get('password').touched || registerForm.get('password').dirty)">
+                <div *ngIf="registerForm.get('password').errors?.required">Password is required</div>
+                <div *ngIf="registerForm.get('password').errors?.pattern">Password must contain at least one lowercase letter, one uppercase letter, and one digit</div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mb-4" [disabled]="registerForm.invalid">Sign up</button>
+          </form>
+
+          <p class="text-center">
+            <span>Already have an account?</span>
+            <a routerLink="/login"><span>Sign in instead</span></a>
+          </p>
+        </div>
+      </div>
+      <!-- /Register Card -->
+    </div>
+  </div>
+</div>

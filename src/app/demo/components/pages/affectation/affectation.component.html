@@ -101,7 +101,8 @@
               <th>Semester</th> <!-- Header for semester -->
               <th>Calendar</th> <!-- Header for calendar -->
               <th>Module</th> <!-- Header for module -->
-              <th>User</th> <!-- Header for user -->
+              <!-- <th>User</th> -->
+               <!-- Header for user -->
               <th>Classroom</th> <!-- Header for classroom -->
               <th style="text-align: right;"></th> <!-- Space for action buttons -->
             </tr>
@@ -116,7 +117,8 @@
               <td>{{ affectation.semester }}</td> <!-- Display semester -->
               <td>{{ affectation.calendar?.academic_year }}</td> <!-- Display calendar -->
               <td>{{ affectation.module?.name }}</td> <!-- Display module -->
-              <td>{{ affectation.user?.firstname }}</td> <!-- Display user -->
+              <!-- <td>{{ affectation.user?.firstname }}</td> -->
+               <!-- Display user -->
               <td>{{ affectation.classroom?.name }}</td> <!-- Display classroom -->
               <td style="text-align: right;"> <!-- Right-aligned action buttons -->
                 <div class="flex justify-content-end"> <!-- Flexbox for alignment -->
@@ -201,7 +203,7 @@
       </div>
 
       <!-- Dropdown for user selection -->
-      <div class="field">
+      <!-- <div class="field">
         <label for="user">User</label>
         <p-dropdown 
           [options]="availableUsers" 
@@ -211,7 +213,7 @@
           appendTo="body"
           style="width: 100%; padding: 0.5rem; border-radius: 4px;"
         ></p-dropdown>
-      </div>
+      </div> -->
 
       <!-- Dropdown for classroom selection -->
       <div class="field">

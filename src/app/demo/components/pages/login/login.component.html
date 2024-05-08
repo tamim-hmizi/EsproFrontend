@@ -1,0 +1,51 @@
+<!-- login.component.html -->
+
+<div class="container-xxl">
+  <div class="authentication-wrapper authentication-basic container-p-y">
+    <div class="authentication-inner">
+      <!-- Register -->
+      <div class="card">
+        <div class="card-body">
+          <!-- Logo -->
+          <div class="app-brand justify-content-center">
+            <a href="index.html" class="app-brand-link gap-2">
+              <img src="assets/layout/images/esprit.png" alt="logo">
+            </a>
+          </div>
+          <!-- /Logo -->
+          <h4 class="mb-2">Welcome to Espro! 👋</h4>
+          <p class="mb-4">Please sign-in to your account and start the adventure</p>
+
+          <form [formGroup]="loginform" (ngSubmit)="submitForm()" class="mb-3">
+            <div class="mb-3">
+              <input type="email" id="email" class="form-control" placeholder="Email" formControlName="email">
+              <!-- Display validation error message -->
+              <div *ngIf="loginform.get('email').invalid && loginform.get('email').touched" class="text-danger">
+                <small *ngIf="loginform.get('email').errors?.required">Email is required</small>
+                <small *ngIf="loginform.get('email').errors?.email">Invalid email format</small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <input type="password" id="password" class="form-control" placeholder="Password" formControlName="password">
+              <!-- Display validation error message -->
+              <div *ngIf="loginform.get('password').invalid && loginform.get('password').touched" class="text-danger">
+                <small>Password is required</small>
+              </div>
+            </div>
+            <div class="mb-3">
+              <button type="submit" class="btn btn-primary btn-block mb-4">Login</button>
+            </div>
+          </form>
+
+          <p class="text-center">
+            <span>New on our platform?</span>
+            <a routerLink="/register">
+              <span>Create an account</span>
+            </a>
+          </p>
+        </div>
+      </div>
+      <!-- /Register -->
+    </div>
+  </div>
+</div>

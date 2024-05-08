@@ -21,10 +21,12 @@ export class CalendarService {
         );
     }
 
-    addCalendar(calendar: Calendar): Observable<Calendar> {
-        return this.http.post<Calendar>(`${this.baseUrl}/add-calendar`, calendar);
+    addCalendars(calendars: Calendar[]): Observable<Calendar[]> {
+        return this.http.post<Calendar[]>(`${this.baseUrl}/add-calendar`, calendars);
     }
-
+    
+    
+    
     removeCalendar(calendarId: number): Observable<void> {
         return this.http.delete<void>(
             `${this.baseUrl}/remove-calendar/${calendarId}`

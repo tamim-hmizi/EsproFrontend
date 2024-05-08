@@ -1,9 +1,12 @@
+import { Fundraiser } from "./fundraiser";
 import { User } from "./user";
 
 export interface Donation {
-    id: number;
+    id?: number;
     type: string;
     amount: number;
     status: string;
-    user: User;
+    user?: User;
+    fundraiserId: number;
+    fundraiserName?: string;
 }
