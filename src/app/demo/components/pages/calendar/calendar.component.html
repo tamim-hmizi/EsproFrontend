@@ -1,0 +1,298 @@
+<div class="grid">
+    <div class="col-12">
+      <div class="card px-6 py-6">
+        <p-toast></p-toast>
+        <p-toolbar styleClass="mb-4">
+          <ng-template pTemplate="left"></ng-template>
+          <ng-template pTemplate="right">
+            <div class="my-2">
+              <button
+                pButton
+                pRipple
+                label="New"
+                icon="pi pi-plus"
+                class="p-button-success mr-2"
+                (click)="openNew()"
+              ></button>
+              <button
+                pButton
+                pRipple
+                label="Delete"
+                icon="pi pi-trash"
+                class="p-button-danger"
+                (click)="deleteSelectedcalendars()"
+                [disabled]="!selectedcalendars || !selectedcalendars.length"
+              ></button>
+            </div>
+          </ng-template>
+        </p-toolbar>
+  
+        <p-table
+          #dt
+          [value]="calendars"
+          [columns]="cols"
+          responsiveLayout="scroll"
+          [rows]="10"
+          [globalFilterFields]="['archive', 'start_date', 'end_date']"
+          [paginator]="true"
+          [rowsPerPageOptions]="rowsPerPageOptions"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          [(selection)]="selectedcalendars"
+          selectionMode="multiple"
+          [rowHover]="true"
+          dataKey="id"
+        >
+          <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+              <h5 class="m-0">Manage Calendars</h5>
+              <span class="block mt-2 md:mt-0 p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                  pInputText
+                  archive="text"
+                  (input)="onGlobalFilter(dt, $event)"
+                  placeholder="Search..."
+                  class="w-full sm:w-auto"
+                />
+              </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 3rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th>Academic year</th>
+              <th>Archive</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Calendar</th>
+              <th></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-calendar>
+            <tr>
+              <td>
+                <p-tableCheckbox [value]="calendar"></p-tableCheckbox>
+              </td>
+              <td style="width: 14%; min-width: 10rem">
+                <span class="p-column-title">Academic year</span>
+                {{ calendar.academic_year }}
+              </td>
+              <td style="width: 14%; min-width: 10rem">
+                <span class="p-column-title">Archive</span>
+                {{ calendar.archive }}
+              </td>
+              <td style="width: 14%; min-width: 10rem">
+                <span class="p-column-title">Start Date</span>
+                {{ calendar.start_date | date: 'mediumDate' }}
+              </td>
+              <td style="width: 14%; min-width: 10rem">
+                <span class="p-column-title">End Date</span>
+                {{ calendar.end_date | date: 'mediumDate' }}
+              </td>
+              <td>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-calendar"
+                  class="p-button-rounded p-button-info"
+                  (click)="openCalendarDialog(calendar)"
+                ></button>
+              </td>
+              <td>
+                <div class="flex justify-content-end">
+                  <button
+                    pButton
+                    pRipple
+                    icon="pi pi-pencil"
+                    class="p-button-rounded p-button-success mr-2"
+                    (click)="editcalendar(calendar)"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    icon="pi pi-trash"
+                    class="p-button-rounded p-button-warning"
+                    (click)="deletecalendar(calendar)"
+                  ></button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+
+  <p-dialog
+    [(visible)]="calendarDialog"
+    [style]="{ width: '450px' }"
+    header="Calendar Details"
+    [modal]="true"
+    class="p-fluid"
+  >
+    <ng-template pTemplate="content">
+  <div class="field">
+    <label for="academic_year" style="width: 120px; margin-right: 1rem;">Academic_year</label>
+    <input
+      archive="text"
+      pInputText
+      id="academic_year"
+      [(ngModel)]="calendar.academic_year"
+      required
+      style="flex-grow: 1; padding: 0.5rem; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc;"
+    />
+  </div>
+  <div class="field">
+    <label for="archive" style="width: 120px; margin-right: 1rem;">Archive</label>
+    <div class="custom-dropdown">
+      <select id="archive" [(ngModel)]="calendar.archive" style="flex-grow: 1; padding: 0.5rem; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc; width: 15rem;">
+        <option value="" disabled selected hidden>Select Archive</option>
+        <option value="oui">Oui</option>
+        <option value="non">Non</option>
+      </select>
+    </div>
+  </div>
+  <div class="field">
+    <label for="start_date" style="display: block; margin-bottom: 0.5rem;">Start Date</label>
+    <input
+      type="date"
+      id="start_date"
+      [(ngModel)]="calendar.start_date"
+      required
+      (input)="updateEndDateMinDate()"
+      style="width: 100%; padding: 0.5rem; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc;"
+    />
+  </div>
+  
+  <div class="field">
+    <label for="end_date" style="display: block; margin-bottom: 0.5rem;">End Date</label>
+    <input
+      type="date"
+      id="end_date"
+      [(ngModel)]="calendar.end_date"
+      required
+      [min]="minEndDate"
+      style="width: 100%; padding: 0.5rem; font-size: 1rem; border-radius: 4px; border: 1px solid #ccc;"
+    />
+  </div>
+</ng-template>
+  
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        label="Cancel"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="hideDialog()"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Save"
+        icon="pi pi-check"
+        class="p-button-text"
+        (click)="savecalendar()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+  
+  <p-dialog
+    [(visible)]="deleteCalendarDialog"
+    header="Confirm"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+  >
+    <div class="flex align-items-center justify-content-center">
+      <i
+        class="pi pi-exclamation-triangle mr-3"
+        style="font-size: 2rem"
+      ></i>
+      <span *ngIf="calendar">
+        Are you sure you want to delete <b>{{ calendar.archive }}</b>?
+      </span>
+    </div>
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        icon="pi pi-times"
+        class="p-button-text"
+        label="No"
+        (click)="deleteCalendarDialog = false"
+      ></button>
+      <button
+        pButton
+        pRipple
+        icon="pi pi-check"
+        class="p-button-text"
+        label="Yes"
+        (click)="confirmDelete()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+
+  <p-dialog
+  [(visible)]="showCalendarDialog"
+  [style]="{ width: '420px' , height: '550px' }"
+  header="Calendar"
+  [modal]="true"
+>
+  <ng-template pTemplate="content">
+    <div style="padding: 10px;">
+      <p-calendar
+        [disabledDates]="highlightedDates"
+        [inline]="true"
+        selectionMode="multiple"
+      ></p-calendar>
+    </div>
+  </ng-template>
+  
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      icon="pi pi-times"
+      class="p-button-text"
+      label="Close"
+      (click)="showCalendarDialog = false"
+    ></button>
+  </ng-template>
+</p-dialog>
+  
+  <p-dialog
+    [(visible)]="deleteCalendarsDialog"
+    header="Confirm"
+    [modal]="true"
+    [style]="{ width: '450px' }"
+  >
+    <div class="flex align-items-center justify-content-center">
+      <i
+        class="pi pi-exclamation-triangle mr-3"
+        style="font-size: 2rem"
+      ></i>
+      <span>Are you sure you want to delete selected calendars?</span>
+    </div>
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        pRipple
+        icon="pi pi-times"
+        class="p-button-text"
+        label="No"
+        (click)="deleteCalendarsDialog = false"
+      ></button>
+      <button
+        pButton
+        pRipple
+        icon="pi pi-check"
+        class="p-button-text"
+        label="Yes"
+        (click)="confirmDeleteSelected()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+  
